@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Электронный дневник — 7 «Б» класс</title>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eff7f1;--surface:#fff;--ink:#173326;--muted:#5c7466;--line:#d5e6da;--accent:#21834f;--on-accent:#fff;
+--g5:#1f8a4c;--g5b:#dcf3e5;--g4:#17788a;--g4b:#d8f0f4;--g3:#8f5d00;--g3b:#fdeccb;--g2:#b3261e;--g2b:#fbdcd9;--ga:#5d6a85;--gab:#e6e9f0;
+color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1626;--surface:#18223a;--ink:#e6ebf7;--muted:#9aa7c4;--line:#2a3856;--accent:#7a9cff;--on-accent:#0f1626;
+--g5:#6fd49a;--g5b:#163a28;--g4:#6cc9db;--g4b:#133640;--g3:#f0c36a;--g3b:#3d2f10;--g2:#ff9a92;--g2b:#46201f;--ga:#9aa7c4;--gab:#26314b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1626;--surface:#18223a;--ink:#e6ebf7;--muted:#9aa7c4;--line:#2a3856;--accent:#7a9cff;--on-accent:#0f1626;
+--g5:#6fd49a;--g5b:#163a28;--g4:#6cc9db;--g4b:#133640;--g3:#f0c36a;--g3b:#3d2f10;--g2:#ff9a92;--g2b:#46201f;--ga:#9aa7c4;--gab:#26314b;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Onest",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:20px 16px 48px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px;margin-bottom:16px}
+h1{font-size:26px;line-height:1.2;margin:0;font-weight:700;letter-spacing:-.01em}
+header p{margin:0;color:var(--muted)}
+nav{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow-x:auto}
+nav button{font:inherit;font-weight:500;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:10px 14px;cursor:pointer;white-space:nowrap}
+nav button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--accent)}
+.bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:14px}
+.bar .sp{flex:1}
+.week{display:flex;align-items:center;gap:8px;font-weight:600}
+button,select,input,textarea{font:inherit;color:var(--ink)}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-weight:600}
+select,input[type=date],textarea{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+label{display:flex;flex-direction:column;gap:4px;color:var(--muted);font-size:13px}
+.bar label{flex-direction:row;align-items:center;gap:8px;font-size:15px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.scroll{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--surface)}
+tbody tr:last-child td{border-bottom:0}
+th{font-weight:600;vertical-align:bottom}
+th small{display:block;color:var(--muted);font-weight:400}
+th .dh{background:none;border:0;cursor:pointer;font:inherit;font-weight:600;color:inherit;padding:2px 6px;border-radius:6px}
+th .dh:hover{background:var(--bg)}
+.today{color:var(--accent)}
+.hwm{display:inline-block;font-size:11px;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:0 4px;margin-top:2px}
+.cell{width:40px;height:36px;border-radius:8px;border:1px dashed var(--line);background:none;cursor:pointer;font-weight:700;font-size:16px}
+.cell:hover{border-color:var(--accent)}
+.cell:disabled,.rs:disabled{cursor:default}.cell:disabled:hover{border-color:var(--line)}.cell.g:disabled{opacity:.85}.rs:disabled{opacity:.6}
+.g{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;border-radius:8px;font-weight:700}
+.cell.g{border:0}
+.g5{color:var(--g5);background:var(--g5b)}.g4{color:var(--g4);background:var(--g4b)}.g3{color:var(--g3);background:var(--g3b)}.g2{color:var(--g2);background:var(--g2b)}.g•{color:var(--ga);background:var(--gab)}
+.avg{font-weight:600;font-variant-numeric:tabular-nums}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;align-items:end}
+.form .wide{grid-column:1/-1}
+textarea{width:100%;min-height:72px;resize:vertical}
+h2{font-size:16px;margin:20px 0 8px}
+.item{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}
+.item:first-of-type{border-top:0}
+.item .s{font-weight:600;min-width:140px}
+.item .t{flex:1;white-space:pre-wrap;overflow-wrap:anywhere}
+.item .x{background:none;border:0;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:2px 6px}
+.item .x:hover{color:var(--g2)}
+.empty{color:var(--muted);padding:6px 0}
+.cell.off{opacity:.4}
+.prof{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;width:100%}.prof label{flex-direction:row;align-items:center;gap:8px;font-size:14px}
+.sc{text-align:left;vertical-align:top;min-width:150px}.sc .ss{font-weight:600}.sc .sh{margin-top:4px;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}.sc .sh+.sh{border-top:1px dashed var(--line);padding-top:4px}.sc.none{color:var(--muted);text-align:center;vertical-align:middle}
+th .dh:disabled{cursor:default;opacity:.55}th .dh:disabled:hover{background:none}
+.tm{display:block;color:var(--muted);font-size:13px}
+td select{width:100%;min-width:130px}
+.entry .n{min-width:110px;color:var(--muted);font-size:13px}
+.day{margin-bottom:12px}
+.day h3{margin:0 0 4px;font-size:15px}
+.entry{display:flex;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.entry .s{font-weight:600;min-width:140px}
+.entry .t{flex:1;color:var(--muted);overflow-wrap:anywhere}
+.entry .gw{min-width:36px}
+#veil{position:fixed;inset:0;background:rgba(10,15,30,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+#veil.on{display:flex}
+#dlg{background:var(--surface);border-radius:12px;padding:18px;max-width:360px;width:100%;border:1px solid var(--line)}
+#dlg h3{margin:0 0 2px;font-size:17px}
+#dlg p{margin:0 0 14px;color:var(--muted)}
+.pick{display:flex;flex-wrap:wrap;gap:8px}
+.pick .g{width:48px;height:48px;font-size:20px;border:0;cursor:pointer}
+.chk{flex-direction:row;align-items:center;gap:8px;color:var(--ink);font-size:14px}
+.who{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:4px 12px;margin-top:8px}
+.lbl{color:var(--muted);font-size:13px;margin-bottom:4px}
+.fchip{display:inline-flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px 4px 2px 10px;margin:6px 6px 0 0;font-size:13px}
+.fchip .x{background:none;border:0;cursor:pointer;color:var(--muted);font-size:16px}
+.files{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.fbtn{font-size:13px;padding:4px 10px}
+.fimg{border:1px solid var(--line);border-radius:8px;padding:0;background:none;cursor:pointer;overflow:hidden}
+.fimg img{display:block;max-width:140px;max-height:100px}
+.rs{width:100%;min-width:150px;font-size:13px}
+.rs.has{background:var(--g3b);color:var(--g3);border-color:var(--g3)}
+.rs.bad{background:var(--g2b);color:var(--g2);border-color:var(--g2)}
+.absb{display:inline-block;margin-left:8px;font-size:13px;font-weight:500;padding:1px 8px;border-radius:6px;background:var(--g3b);color:var(--g3)}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;display:none;z-index:30;max-width:90vw}
+@media (max-width:560px){.item,.entry{flex-wrap:wrap}.item .s,.entry .s{min-width:100%}h1{font-size:22px}}
+/* Вариант 1: современный синий */
+:root{--bg:#eff7f1;--surface:#ffffff;--ink:#173326;--muted:#5c7466;--line:#d5e6da;--accent:#21834f;--on-accent:#fff;color-scheme:light}
+body{background:radial-gradient(ellipse at top left,#d9f0df 0,transparent 40%),var(--bg)}
+.wrap{max-width:1180px;padding-top:28px}
+header{background:linear-gradient(125deg,#14532d,#21834f 70%,#55ad76);color:white;padding:24px 26px;border-radius:20px;box-shadow:0 12px 30px #2449a51f;align-items:center}
+header p{color:#e2f5e8}h1{letter-spacing:-.035em;font-size:29px}
+nav{border:0;gap:7px;margin:18px 0}nav button{border:1px solid transparent;border-radius:11px;padding:11px 15px}nav button[aria-selected=true]{background:var(--surface);border-color:var(--line);color:var(--accent);box-shadow:0 4px 14px #1e51300d}
+.panel,.scroll{border-radius:16px;box-shadow:0 5px 20px #244c3010;border-color:#d8e8dc}.btn,select,input[type=date],textarea{border-radius:10px}.btn.primary{box-shadow:0 5px 12px #21834f2b}
+th,td{padding:11px 12px}th{background:#f7f9ff}.panel{padding:20px}
+
+
+/* Улучшения интерфейса: аватары, значки предметов и карточки среднего балла */
+.avatar{display:inline-flex;align-items:center;justify-content:center;flex:0 0 34px;width:34px;height:34px;border-radius:12px;font-size:11px;font-weight:800;letter-spacing:.02em;color:#fff;box-shadow:inset 0 1px 0 #ffffff55}
+.student-cell{display:flex;align-items:center;gap:10px;min-width:205px;text-align:left;font-weight:600}
+.student-name{white-space:nowrap}
+.subject-label{display:inline-flex;align-items:center;gap:8px}
+.subject-icon{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;flex:0 0 30px;border-radius:10px;background:#e5f4e9;font-size:17px}
+.sc .ss{display:flex;align-items:center;gap:7px}
+.average-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:8px}
+.average-card{display:flex;align-items:center;gap:10px;padding:12px;border-radius:13px;border:1px solid var(--line);background:var(--surface);min-width:0}
+.average-card .average-info{min-width:0;flex:1}
+.average-card .average-name{font-size:13px;color:var(--muted);font-weight:600;overflow-wrap:anywhere}
+.average-card .average-value{font-size:22px;line-height:1.2;font-weight:800;font-variant-numeric:tabular-nums}
+.average-card.a5{background:var(--g5b);border-color:var(--g5b);color:var(--g5)}
+.average-card.a4{background:var(--g4b);border-color:var(--g4b);color:var(--g4)}
+.average-card.a3{background:var(--g3b);border-color:var(--g3b);color:var(--g3)}
+.average-card.a2{background:var(--g2b);border-color:var(--g2b);color:var(--g2)}
+.average-card.a0{background:var(--bg);color:var(--muted)}
+.diary-subject{display:flex;align-items:center;gap:8px;min-width:150px;font-weight:700}
+.sc .grade-highlight{margin-top:7px;padding:7px 9px;border-radius:10px;background:#e5f4e9;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sc .grade-highlight .tm{color:#21834f}
+@media(max-width:560px){.student-cell{min-width:190px}.average-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.average-card{padding:10px}.average-card .average-value{font-size:20px}}
+
+.grade-view-toggle{display:flex;gap:8px;flex-wrap:wrap}
+.grade-day h3{margin:0 0 8px;font-size:16px}
+.grade-entry{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--line)}
+.grade-entry:first-of-type{border-top:0}
+.grade-entry-subject{font-weight:600;min-width:0}
+.grade-entry-date{color:var(--muted);font-weight:600}
+.grade-entry-value{flex:0 0 auto}
+.grade-subject-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.grade-average{font-size:13px;font-weight:700;padding:5px 9px;border-radius:8px;background:var(--bg);color:var(--muted)}
+.grade-average.a5{background:var(--g5b);color:var(--g5)}.grade-average.a4{background:var(--g4b);color:var(--g4)}.grade-average.a3{background:var(--g3b);color:var(--g3)}.grade-average.a2{background:var(--g2b);color:var(--g2)}
+@media(max-width:560px){.grade-entry-subject{font-size:14px}.grade-subject-head{align-items:flex-start}}
+
+/* Вариант 3: Mint Studio — светлый мятный, округлые элементы и мягкие акценты */
+body.variant-mint{--bg:#eaf8f5;--surface:#fff;--ink:#183c39;--muted:#64817b;--line:#cce8e1;--accent:#159477;--on-accent:#fff;--g5:#15805c;--g5b:#d9f6e9;background:linear-gradient(135deg,#e5f7f1 0,#f1fbf8 45%,#e8f4fa 100%)}
+body.variant-mint .wrap{max-width:1160px;padding-top:26px}
+body.variant-mint header{padding:22px 25px;border-radius:28px;background:linear-gradient(120deg,#d0f3e8,#e8f8f3 60%,#dceff8);border:1px solid #b9e4d8;box-shadow:inset 0 1px #fff,0 10px 28px #277d6815;align-items:center}
+body.variant-mint h1{font-size:clamp(24px,3vw,33px);letter-spacing:-.04em;color:#13594a}
+body.variant-mint header p{color:#47766b}
+body.variant-mint nav{border:1px solid #cce8e1;background:#ffffffad;padding:5px;border-radius:18px;gap:5px}
+body.variant-mint nav button{border:0;border-radius:13px;padding:10px 14px}
+body.variant-mint nav button[aria-selected=true]{background:#d2f3e7;color:#0d7257;box-shadow:inset 0 0 0 1px #a8dfcf}
+body.variant-mint .panel,body.variant-mint .scroll{border-radius:22px;border-color:#cce8e1;box-shadow:0 8px 24px #3a827016}
+body.variant-mint .panel{padding:20px}
+body.variant-mint .btn{border-radius:999px;padding:7px 14px}
+body.variant-mint .btn.primary{background:linear-gradient(120deg,#12866a,#1ca98a);box-shadow:0 4px 12px #1594772b}
+body.variant-mint select,body.variant-mint input[type=date],body.variant-mint textarea{border-radius:13px;border-color:#c4e5dc}
+body.variant-mint .cell{border-radius:12px;background:#f6fcfa}
+body.variant-mint .average-card{border-radius:20px;background:linear-gradient(145deg,#fff,#f0fbf7);box-shadow:0 5px 16px #3a827010}
+body.variant-mint .grade-average{border-radius:999px}
+body.variant-mint .sc .grade-highlight{background:#e4f8f0;border:1px solid #c7eddf}
+body.variant-mint .avatar{box-shadow:0 0 0 3px #fff,0 3px 8px #1c655020}
+
+
+
+/* Mint Studio: мягкие анимации интерфейса */
+@keyframes mintFadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes mintPop{0%{opacity:0;transform:scale(.96)}70%{transform:scale(1.012)}100%{opacity:1;transform:scale(1)}}
+@keyframes mintShimmer{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+body.variant-mint .wrap>header{animation:mintFadeUp .55s cubic-bezier(.2,.75,.25,1) both}
+body.variant-mint nav{animation:mintFadeUp .5s .08s ease-out both}
+body.variant-mint .panel,body.variant-mint .scroll{animation:mintPop .42s cubic-bezier(.2,.75,.25,1) both;transition:box-shadow .22s ease,border-color .22s ease,transform .22s ease}
+body.variant-mint .panel:hover,body.variant-mint .scroll:hover{box-shadow:0 12px 30px #277d681e;border-color:#a9ded1}
+body.variant-mint nav button{transition:background .2s ease,color .2s ease,transform .2s ease,box-shadow .2s ease}
+body.variant-mint nav button:hover{background:#e3f7f0;transform:translateY(-1px)}
+body.variant-mint nav button[aria-selected=true]{animation:mintPop .25s ease-out both}
+body.variant-mint .btn{transition:transform .16s ease,box-shadow .2s ease,background .2s ease,border-color .2s ease}
+body.variant-mint .btn:hover{transform:translateY(-2px);box-shadow:0 5px 12px #277d6818}
+body.variant-mint .btn:active{transform:translateY(0) scale(.98)}
+body.variant-mint .btn.primary:hover{box-shadow:0 7px 18px #15947742;background-size:180% 100%;background-image:linear-gradient(110deg,#12866a,#1ca98a,#39b99a);animation:mintShimmer .8s ease-in-out}
+body.variant-mint .cell,body.variant-mint .average-card,body.variant-mint .grade-entry{transition:background .2s ease,box-shadow .2s ease,transform .2s ease}
+body.variant-mint .cell:hover{background:#eaf8f3;box-shadow:0 3px 10px #277d6812}
+body.variant-mint .average-card:hover{transform:translateY(-3px);box-shadow:0 9px 20px #3a82701c}
+body.variant-mint .grade-average,body.variant-mint .grade-highlight{transition:transform .18s ease,filter .18s ease}
+body.variant-mint .grade-average:hover,body.variant-mint .grade-highlight:hover{transform:scale(1.025);filter:saturate(1.08)}
+body.variant-mint .avatar{transition:transform .22s ease,box-shadow .22s ease}
+body.variant-mint .avatar:hover{transform:rotate(-5deg) scale(1.08);box-shadow:0 0 0 3px #fff,0 5px 12px #1c655030}
+body.variant-mint :is(button,a,input,select,textarea):focus-visible{outline:3px solid #65cbb1;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){body.variant-mint *,body.variant-mint *::before,body.variant-mint *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+
+/* Multi-criteria grades and CDZ results */
+.grade-pills{display:flex;flex-wrap:wrap;gap:3px;justify-content:center}.grade-dot{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:22px;border:1px dashed #d39b24;border-radius:7px;color:#a87508;background:#fff7df;font-weight:900;padding:0 5px}.dot-note{font-size:12px;color:var(--muted);margin-top:6px}.grade-pill{font-size:11px;padding:3px 5px;border-radius:7px;background:#e6f7f0;color:#12634f;font-weight:800;white-space:nowrap}.grade-criterion{font-size:11px;color:var(--muted);display:block}.grade-row{display:flex;align-items:center;gap:8px;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}.grade-row:last-child{border-bottom:0}.weight-badge{font-size:11px;border-radius:99px;background:#eaf0ff;color:#3d58a8;padding:3px 7px}.result-good{color:#137a52;font-weight:800}.result-bad{color:#b45309;font-weight:800}.result-card{margin:10px 0;animation:mintFadeUp .3s ease both}.criteria-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}
+/* Calendar, submissions and smart quiz builder */
+.hw-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 16px}.hw-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}.hw-cal-head{text-align:center;color:var(--muted);font-size:12px;padding:5px}.hw-cal-day{min-height:105px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:7px;overflow:hidden}.hw-cal-day.muted{opacity:.45}.hw-cal-day.today{border:2px solid var(--accent)}.hw-cal-day button{border:0;background:none;color:var(--ink);font-weight:800;cursor:pointer;padding:0 4px;border-radius:6px}.hw-cal-task{font-size:11px;line-height:1.3;padding:3px 5px;border-radius:6px;background:#e6f7f0;color:#12634f;margin-top:4px;overflow-wrap:anywhere}.submission-status{display:inline-flex;padding:3px 8px;border-radius:99px;background:#fff1cc;color:#865900;font-size:12px;font-weight:700}.submission-status.done{background:#dff7e9;color:#146b45}.submission-box{border-top:1px solid var(--line);padding:10px 0}.quiz-settings{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:14px;background:var(--bg)}.quiz-timer{font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}.hw-submit-form textarea{min-height:130px}
+@media(max-width:650px){.hw-calendar{gap:3px}.hw-cal-day{min-height:72px;padding:4px;border-radius:8px}.hw-cal-task{font-size:10px;padding:2px}.hw-cal-head{font-size:10px}}
+/* Test library and attached quiz UI */
+.test-card{margin:10px 0;animation:mintFadeUp .32s ease both}.test-card h3{margin:8px 0}.attached-tests{margin-top:12px;padding:12px;border:1px solid #c8ebdf;border-radius:14px;background:#f1fbf7}.test-link-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.attached-tests .btn{white-space:normal;text-align:left}.chk{display:flex;gap:7px;align-items:flex-start}.chk input{margin-top:4px}#dlg{max-width:760px;max-height:88vh;overflow:auto;width:100%;background:var(--surface);border-radius:20px;padding:22px;box-shadow:0 20px 60px #0003}#dlg h2{margin-top:0}
+</style>
+</head>
+<body class="variant-mint">
+<div class="wrap">
+<header>
+  <h1>Электронный дневник · 7 «Б»</h1>
+  <p>Классный руководитель: Алферов А. Г.</p>
+  <div class="prof" id="prof"></div>
+</header>
+<nav role="tablist">
+  <button role="tab" data-tab="journal">Журнал оценок</button>
+  <button role="tab" data-tab="abs">Отсутствия</button>
+  <button role="tab" data-tab="hw">Домашние задания</button>
+  <button role="tab" data-tab="tests">Библиотека тестов</button>
+  <button role="tab" data-tab="cdz">Результаты ЦДЗ</button>
+  <button role="tab" data-tab="sched">Расписание</button>
+  <button role="tab" data-tab="grades" hidden>Оценки</button>
+</nav>
+<main id="app"></main>
+</div>
+<div id="toast" role="status"></div>
+<div id="veil"><div id="dlg" role="dialog" aria-modal="true"></div></div>
+
+<script>
+const STUDENTS=["Алексеев Артём","Белова Мария","Волков Даниил","Громова София","Дмитриев Кирилл","Егорова Анна","Захаров Михаил","Иванова Полина","Козлов Никита","Лебедева Ева","Морозов Тимофей","Новикова Алиса"];
+const SUBJ=["Алгебра","Русский язык","Литература","История","Физика","Английский язык","Биология"];
+const SUBJECT_META=[{icon:"➗",color:"#21834f"},{icon:"✍️",color:"#b54708"},{icon:"📖",color:"#7c3aed"},{icon:"🏛️",color:"#a16207"},{icon:"⚛️",color:"#087f8c"},{icon:"🇬🇧",color:"#2563eb"},{icon:"🧬",color:"#15803d"}];
+const avatarHtml=(name,i)=>{const parts=name.trim().split(/\s+/);const initials=(parts[0]?.[0]||"")+(parts[1]?.[0]||"");const colors=["#315bd6","#9b4dc8","#0f8b8d","#d97706","#db4777","#4776c5","#16845b","#7457c8","#bb5a26","#3478a8","#bd3c57","#54823c"];return `<span class="avatar" aria-hidden="true" style="background:${colors[i%colors.length]}">${esc(initials.toUpperCase())}</span>`};
+const subjectHtml=(sj,extra="")=>`<span class="subject-label ${extra}"><span class="subject-icon" aria-hidden="true">${SUBJECT_META[sj]?.icon||"📚"}</span><span>${esc(SUBJ[sj]||"")}</span></span>`;
+const averageClass=v=>{const n=parseFloat(String(v).replace(",","."));return !Number.isFinite(n)?"a0":n>=4.5?"a5":n>=3.5?"a4":n>=2.5?"a3":"a2"};
+const DAYS=["Пн","Вт","Ср","Чт","Пт"];
+const DAYF=["Понедельник","Вторник","Среда","Четверг","Пятница"];
+const MON=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+const GRADES=["5","4","3","2"];
+const TIMES=["8:30–9:15","9:25–10:10","10:25–11:10","11:25–12:10","12:25–13:10","13:25–14:10"];
+const DEFSCHED=[[0,1,2,3,4],[5,0,6,1,3],[4,2,0,5,6],[1,3,0,4,5],[2,6,5,0,1]].map(a=>{while(a.length<6)a.push(-1);return a});
+
+const SCHED=DEFSCHED;
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const parse=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const monday=d=>{const x=new Date(d);x.setHours(0,0,0,0);return addDays(x,-((x.getDay()+6)%7))};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt=d=>d.getDate()+" "+MON[d.getMonth()];
+const todayIso=iso(new Date());
+
+let week=monday(new Date()),tab="journal",subj=0,student=0,hwSubj=0,hwDate=iso(addDays(new Date(),1)),hwFilter="all",gradeView="date";
+
+const REASONS=["Болезнь","Медицинская справка","Семейные обстоятельства","Соревнования, олимпиада","Без уважительной причины","Другая причина"];
+let pendFiles=[],hwTo=[],hwAll=true,hwText="",hwTests=[],hwCdzCriteria="0-1=2, 2-3=3, 4-5=4, 6=5",hwCdzCriteriaByTest={},tt=0,activeTestId=null,activeHwId=null,editHwId=null,editGradeId=null,hwView="list",hwSelectedDate="",hwResultsExpanded={},calendarMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1),activeTestLayout=[],activeTestTimer=null,activeTestDeadline=0,submissionFiles=[];
+const GRADE_CRITERIA=["ЦДЗ","Контрольная работа","Устный ответ","Самостоятельная работа","Домашняя работа","Практическая работа","Проект","Другое"];
+const forMe=(h,i)=>!h.to||h.to.includes(i);
+function note(t){const el=document.getElementById("toast");el.textContent=t;el.style.display="block";clearTimeout(tt);tt=setTimeout(()=>el.style.display="none",3500)}
+function toBlob(u){const p=u.split(","),m=/data:([^;]*)/.exec(p[0]),b=atob(p[1]),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:m?m[1]:""})}
+async function dl(id,j){
+  const h=S.hw.find(x=>x.id===id),f=h&&h.files&&h.files[j];if(!f)return;
+  let d=null;try{d=window.claude?await window.claude.use("downloads"):null}catch(e){}
+  if(!d){note("Сохранение файлов недоступно в этом окне");return}
+  try{await d.save({filename:f.name,data:toBlob(f.data)})}
+  catch(e){if(e&&e.code==="rejected_extension")note("Этот тип файла нельзя сохранить отсюда");else if(!e||e.code!=="declined")note("Не удалось сохранить файл")}
+}
+const filesHtml=h=>(h.files&&h.files.length)?`<div class="files">${h.files.map((f,j)=>f.type.indexOf("image/")===0?`<button class="fimg" data-dl="${h.id},${j}" title="Сохранить ${esc(f.name)}"><img src="${esc(f.data)}" alt="${esc(f.name)}"></button>`:`<button class="btn fbtn" data-dl="${h.id},${j}">📎 ${esc(f.name)}</button>`).join("")}</div>`:"";
+const hwHtml=h=>`<div>${esc(h.text)}</div>`+filesHtml(h);
+const who=h=>h.to?h.to.map(i=>STUDENTS[i]).join(", "):"Весь класс";
+const pendHtml=()=>pendFiles.map((f,i)=>`<span class="fchip">${esc(f.name)}<button class="x" data-rmf="${i}" aria-label="Убрать файл">×</button></span>`).join("");
+
+function defaultTests(){return [
+{id:"sample-algebra",title:"Алгебра: выражения",subj:0,questions:[{q:"Чему равно 3x + 2x?",options:["5x","5x²","6x","x"],correct:0},{q:"Вычисли: 4²",options:["8","12","16","14"],correct:2},{q:"Реши уравнение: x + 7 = 12",options:["x = 19","x = 5","x = 4","x = 7"],correct:1}]},
+{id:"sample-russian",title:"Русский язык: части речи",subj:1,questions:[{q:"Какая часть речи обозначает действие?",options:["Имя существительное","Глагол","Имя прилагательное","Наречие"],correct:1},{q:"На какой вопрос обычно отвечает имя прилагательное?",options:["Что делать?","Кто? Что?","Какой? Какая? Какое?","Где? Когда?"],correct:2}]},
+{id:"sample-biology",title:"Биология: клетки",subj:6,questions:[{q:"Какая структура управляет работой клетки и содержит наследственную информацию?",options:["Ядро","Клеточная стенка","Вакуоль","Цитоплазма"],correct:0},{q:"Как называется оболочка, отделяющая клетку от окружающей среды?",options:["Ядрышко","Клеточная мембрана","Хлоропласт","Рибосома"],correct:1}]}
+]}
+function seed(){
+  const g={},hw=[],m=monday(new Date());
+  return {grades:g,hw,abs:{},tests:defaultTests()};
+}
+let S=null;
+try{S=JSON.parse(localStorage.getItem("diary7b3"))}catch(e){}
+if(!S||!S.grades||!S.hw)S=seed();
+if(!S.abs)S.abs={};
+if(!Array.isArray(S.tests))S.tests=defaultTests();
+if(!Array.isArray(S.gradeEntries))S.gradeEntries=[];
+if(!Array.isArray(S.testResults))S.testResults=[];
+if(!Array.isArray(S.hwSubmissions))S.hwSubmissions=[];
+S.tests.forEach(t=>{if(typeof t.shuffleQuestions!=="boolean")t.shuffleQuestions=false;if(typeof t.shuffleOptions!=="boolean")t.shuffleOptions=false;if(!Number.isFinite(+t.timeLimit))t.timeLimit=0;});
+// Migrate legacy single grades into the new multi-criteria format.
+for(const k of Object.keys(S.grades)){const parts=k.split("|"),si=+parts[0],sj=+parts[1],date=parts[2],v=S.grades[k];if(parts.length===3&&date&&Number.isFinite(si)&&Number.isFinite(sj)&&GRADES.includes(String(v))&&!S.gradeEntries.some(x=>x.student===si&&x.subj===sj&&x.date===date)){S.gradeEntries.push({id:"legacy-"+k.replace(/[^a-z0-9]/gi,"-"),student:si,subj:sj,date,grade:String(v),criterion:"Оценка",weight:1,comment:""});delete S.grades[k]}}
+S.hw.forEach(h=>{if(!Array.isArray(h.tests))h.tests=[];if(!h.cdzCriteriaByTest||typeof h.cdzCriteriaByTest!=="object")h.cdzCriteriaByTest={};for(const id of h.tests){if(!h.cdzCriteriaByTest[id])h.cdzCriteriaByTest[id]=h.cdzCriteria||"0-1=2, 2-3=3, 4-5=4, 6=5";}});
+if(!S.dots)S.dots={};
+if(S.role!=="student")S.role="teacher";
+if(typeof S.me!=="number")S.me=0;
+const isStudent=()=>S.role==="student";
+function resolveDots(){
+  let ch=false;
+  for(const k in S.dots){
+    const d=S.dots[k];
+    if(d.on<=todayIso){
+      const parts=k.split("|"),si=+parts[0],sj=+parts[1],date=parts[2];
+      if(Number.isFinite(si)&&Number.isFinite(sj)&&date){
+        S.gradeEntries.push({id:"grade-dot-"+Math.random().toString(36).slice(2),student:si,subj:sj,date,grade:String(d.grade||"3"),criterion:d.criterion||"Оценка",weight:Number(d.weight)||1,comment:d.comment||""});
+        delete S.grades[k];
+      }else S.grades[k]=d.grade||"3";
+      delete S.dots[k];ch=true;
+    }else if(S.grades[k]!=="•"){delete S.dots[k];ch=true}
+  }
+  if(ch)save();
+}
+resolveDots();
+for(const k in S.grades)if(S.grades[k]==="Н")delete S.grades[k];
+let dataFileHandle=null, fileWriteQueue=Promise.resolve(), fileSaveReady=false;
+const HANDLE_DB="diary7b-autosave", HANDLE_STORE="handles";
+function openHandleDb(){return new Promise((resolve,reject)=>{const r=indexedDB.open(HANDLE_DB,1);r.onupgradeneeded=()=>r.result.createObjectStore(HANDLE_STORE);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function storeFileHandle(handle){try{const db=await openHandleDb();await new Promise((resolve,reject)=>{const tx=db.transaction(HANDLE_STORE,"readwrite");tx.objectStore(HANDLE_STORE).put(handle,"dataFile");tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)});db.close()}catch(e){}}
+async function restoreFileHandle(){try{const db=await openHandleDb();const handle=await new Promise((resolve,reject)=>{const r=db.transaction(HANDLE_STORE).objectStore(HANDLE_STORE).get("dataFile");r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});db.close();if(handle){dataFileHandle=handle;const perm=await handle.queryPermission({mode:"readwrite"});fileSaveReady=perm==="granted";updateSaveStatus()}}catch(e){}}
+function updateSaveStatus(){const el=document.getElementById("saveStatus");if(el)el.textContent=fileSaveReady?"Автосохранение в файл включено":"Сохранение в браузере"}
+async function writeDataFile(){if(!dataFileHandle||!fileSaveReady)return;fileWriteQueue=fileWriteQueue.then(async()=>{const w=await dataFileHandle.createWritable();await w.write(JSON.stringify({format:"diary7b-data-v1",savedAt:new Date().toISOString(),data:S},null,2));await w.close()}).catch(e=>{fileSaveReady=false;updateSaveStatus();console.warn("Не удалось сохранить файл дневника",e)});return fileWriteQueue}
+async function connectDataFile(){if(!window.showSaveFilePicker){note("Автосохранение в файл не поддерживается этим браузером. Данные пока сохраняются в браузере.");return}try{dataFileHandle=await window.showSaveFilePicker({suggestedName:"diary7b-data.json",types:[{description:"Файл данных электронного дневника",accept:{"application/json":[".json"]}}]});fileSaveReady=true;await storeFileHandle(dataFileHandle);await writeDataFile();updateSaveStatus();note("Файл выбран. Оценки и ДЗ будут автоматически сохраняться в него.")}catch(e){if(e&&e.name!=="AbortError")note("Не удалось подключить файл для автосохранения")}}
+function save(){try{localStorage.setItem("diary7b3",JSON.stringify(S));if(dataFileHandle&&fileSaveReady)writeDataFile();return true}catch(e){return false}}
+
+const chip=v=>v?`<span class="g g${v}">${v}</span>`:"";
+const weekDays=()=>DAYS.map((_,i)=>addDays(week,i));
+function weekNav(){
+  return `<div class="week"><button class="btn" data-w="-1" aria-label="Предыдущая неделя">‹</button>
+  <span>${fmt(week)} – ${fmt(addDays(week,4))}</span>
+  <button class="btn" data-w="1" aria-label="Следующая неделя">›</button>
+  <button class="btn" data-w="0">Сегодня</button></div>`;
+}
+function subjSelect(id,val,all){
+  return `<select id="${id}">${all?`<option value="all"${val==="all"?" selected":""}>Все предметы</option>`:""}${SUBJ.map((s,i)=>`<option value="${i}"${String(val)===String(i)?" selected":""}>${s}</option>`).join("")}</select>`;
+}
+function avg(si,sj){
+  let weighted=0,weights=0;
+  const dates=new Set();
+  S.gradeEntries.filter(e=>e.student===si&&e.subj===sj).forEach(e=>{const w=Number(e.weight)||1;weighted+=Number(e.grade)*w;weights+=w;dates.add(e.date)});
+  for(const k in S.grades){const parts=k.split("|"),a=+parts[0],b=+parts[1],date=parts[2],v=S.grades[k];if(a===si&&b===sj&&v!=="•"&&!dates.has(date)){weighted+=+v;weights++}}
+  return weights?(weighted/weights).toFixed(2).replace(".",","):"—";
+}
+
+function journal(){
+  const ds=weekDays();
+  const head=ds.map((d,i)=>{
+    const k=iso(d),has=S.hw.find(h=>h.subj===subj&&h.date===k),past=k<todayIso;
+    return `<th><small>${DAYS[i]}</small><button class="dh${k===todayIso?" today":""}"${past?' disabled title="Нельзя задать домашнее задание на прошедшую дату"':` data-hwd="${k}" title="Задать домашнее задание на ${fmt(d)}"`}>${d.getDate()}</button>${has?`<br><span class="hwm" title="${esc(has.text)}">ДЗ</span>`:""}</th>`;
+  }).join("");
+  const rows=STUDENTS.map((n,si)=>`<tr><td><div class="student-cell">${avatarHtml(n,si)}<span class="student-name">${esc(n)}</span></div></td>${ds.map(d=>{
+    const date=iso(d),key=si+"|"+subj+"|"+date,legacy=S.grades[key],multi=S.gradeEntries.filter(x=>x.student===si&&x.subj===subj&&x.date===date),dot=S.dots[key],off=!SCHED[(d.getDay()+6)%7].includes(subj);
+    const pills=multi.length?`<span class="grade-pills">${multi.map(x=>`<span role="button" tabindex="0" class="grade-pill" data-grade-detail="${esc(x.id)}" title="Нажмите, чтобы посмотреть подробности">${x.grade}${x.weight>1?`×${x.weight}`:""}</span>`).join("")}</span>`:"";
+    const dotHtml=dot?`<span class="grade-dot" title="Запланированная оценка: ${esc(dot.criterion||"Оценка")}, ${dot.grade}${Number(dot.weight)>1?` ×${dot.weight}`:""}; дата выставления ${fmt(parse(dot.on))}">•</span>`:"";
+    const shown=legacy==="•"?(pills+dotHtml):(pills||(legacy||""));
+    return `<td><button class="cell${legacy&&legacy!=="•"&&!multi.length?" g g"+legacy:""}${off&&!legacy&&!multi.length&&!dot?" off":""}" data-si="${si}" data-d="${date}" aria-label="${esc(n)}, ${fmt(d)}">${shown}</button></td>`;
+  }).join("")}<td class="avg">${avg(si,subj)}</td></tr>`).join("");
+  return `<div class="bar">${weekNav()}<span class="sp"></span><label>Предмет ${subjSelect("subj",subj)}</label></div>
+  <div class="scroll"><table><thead><tr><th>Ученик</th>${head}<th><small>за всё время</small>Средний</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <p class="empty">Нажмите на клетку, чтобы добавить несколько оценок за день по разным критериям и коэффициентам. Средний балл считается с учётом коэффициентов. Для старых оценок сохраняется прежний формат. Нажмите на число в шапке, чтобы задать домашнее задание на этот день. Затемнены дни, когда по расписанию нет урока по этому предмету.</p>`;
+}
+
+function submissionFor(hwId,si){return S.hwSubmissions.find(x=>x.hwId===hwId&&x.student===si)}
+function hwCalendar(){
+  const first=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth(),1),offset=(first.getDay()+6)%7,start=addDays(first,-offset),monthLabel=first.toLocaleDateString("ru-RU",{month:"long",year:"numeric"});
+  const days=Array.from({length:42},(_,i)=>addDays(start,i));
+  const head=["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].map(x=>`<div class="hw-cal-head">${x}</div>`).join("");
+  const cells=days.map(d=>{const date=iso(d),items=S.hw.filter(h=>h.date===date&&(!isStudent()||forMe(h,student)));return `<div class="hw-cal-day${d.getMonth()!==first.getMonth()?" muted":""}${date===todayIso?" today":""}"><button type="button" data-calendar-date="${date}" title="Выбрать ${fmt(d)}">${d.getDate()}</button>${items.slice(0,3).map(h=>`<div class="hw-cal-task" title="${esc(SUBJ[h.subj]+": "+h.text)}">${esc(SUBJ[h.subj])}${h.tests?.length?" · тест":""}</div>`).join("")}${items.length>3?`<div class="tm">+${items.length-3} ещё</div>`:""}</div>`}).join("");
+  return `<section class="panel"><div class="bar"><h2 style="margin:0;text-transform:capitalize">📅 ${esc(monthLabel)}</h2><span class="sp"></span><button class="btn" data-month="-1" aria-label="Предыдущий месяц">‹</button><button class="btn" data-month="0">Этот месяц</button><button class="btn" data-month="1" aria-label="Следующий месяц">›</button></div><div class="hw-calendar">${head}${cells}</div><p class="tm" style="margin-top:10px">Нажми на число, чтобы выбрать дату для нового ДЗ. Задания отображаются внутри календаря.</p></section>`;
+}
+function hwViewControls(){return `<div class="hw-toolbar"><button class="btn${hwView==="list"?" primary":""}" data-hw-view="list">☰ Список заданий</button><button class="btn${hwView==="calendar"?" primary":""}" data-hw-view="calendar">📅 Календарь</button></div>${hwView==="calendar"?hwCalendar():""}`}
+function hwStudent(){
+  const list=S.hw.filter(h=>forMe(h,student)&&(!hwSelectedDate||h.date===hwSelectedDate)&&(hwFilter==="all"||String(h.subj)===hwFilter)).sort((a,b)=>b.date.localeCompare(a.date));
+  let out="",last="";
+  for(const h of list){
+    if(h.date!==last){last=h.date;const d=parse(h.date);out+=`<h2>${DAYF[(d.getDay()+6)%7]||"Выходной"}, ${fmt(d)}${h.date===todayIso?" (сегодня)":""}</h2>`}
+    const sub=submissionFor(h.id,student);
+    out+=`<div class="item"><div class="s">${subjectHtml(h.subj)}</div><div class="t">${hwHtml(h)}${testButtons(h)}${sub?`<div class="submission-box"><span class="submission-status done">✓ ДЗ отправлено</span>${sub.reviewed?`<p class="tm">Комментарий учителя: ${esc(sub.teacherComment||"Без комментария")}${sub.grade?` · Оценка: ${esc(sub.grade)}`:""}</p>`:`<p class="tm">Ответ отправлен ${esc(new Date(sub.submittedAt).toLocaleString("ru-RU"))}. Ожидает проверки.</p>`}<button class="btn" data-submit-hw="${esc(h.id)}">Изменить отправку</button></div>`:`<div class="submission-box"><span class="submission-status">Не сдано</span><button class="btn primary" data-submit-hw="${esc(h.id)}">📤 Сдать ДЗ</button></div>`}</div></div>`;
+  }
+  return `${hwViewControls()}<div class="bar"><label>Показать ${subjSelect("hwFilter",hwFilter,true)}</label>${hwSelectedDate?`<span class="tm">Дата: ${fmt(parse(hwSelectedDate))}</span><button class="btn" data-clear-calendar-filter>Показать все даты</button>`:""}</div><div class="panel">${out||`<div class="empty">Заданий на выбранную дату нет.</div>`}</div>`;
+}
+function teacherSubmissions(){
+  const entries=S.hw.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(h=>{const assigned=STUDENTS.map((name,si)=>({name,si,sub:submissionFor(h.id,si)})).filter(x=>forMe(h,x.si));const done=assigned.filter(x=>x.sub).length;return `<section class="submission-box"><div class="bar"><div><b>${subjectHtml(h.subj)}</b><div class="tm">${fmt(parse(h.date))} · ${esc(h.text||"Тест/вложение")}</div></div><span class="submission-status${done===assigned.length&&assigned.length?" done":""}">${done}/${assigned.length} сдано</span></div>${assigned.map(x=>`<div class="grade-row"><div><b>${esc(x.name)}</b><div class="tm">${x.sub?`Отправлено ${esc(new Date(x.sub.submittedAt).toLocaleString("ru-RU"))}${x.sub.reviewed?" · Проверено":" · Ожидает проверки"}`:"Ещё не сдано"}</div></div>${x.sub?`<button class="btn" data-review-submission="${esc(x.sub.id)}">${x.sub.reviewed?"Открыть проверку":"Проверить"}</button>`:`<span class="submission-status">Ожидается</span>`}</div>`).join("")}</section>`}).join("");
+  return `<section class="panel"><h2>📬 Сдача и проверка домашних заданий</h2><p class="tm">Статусы отправок учеников, ответы и комментарии к проверенным работам.</p>${entries||`<div class="empty">Сначала задайте домашнее задание.</div>`}</section>`;
+}
+function homeworkResultsPanel(h){
+  const expanded=!!hwResultsExpanded[h.id];
+  const attached=(h.tests||[]).map(id=>S.tests.find(t=>t.id===id)).filter(Boolean);
+  const assigned=STUDENTS.map((name,si)=>({name,si,sub:submissionFor(h.id,si)})).filter(x=>forMe(h,x.si));
+  const submitted=assigned.filter(x=>x.sub).length;
+  const cdzPending=S.testResults.filter(r=>r.hwId===h.id).length;
+  const cdzGraded=S.gradeEntries.filter(g=>g.hwId===h.id&&g.cdzTestId).length;
+  const writtenRows=assigned.map(x=>`<div class="grade-row"><div><b>${esc(x.name)}</b><div class="tm">${x.sub?`Отправлено ${esc(new Date(x.sub.submittedAt).toLocaleString("ru-RU"))}${x.sub.reviewed?" · Проверено":" · Ожидает проверки"}${x.sub.grade?` · Оценка ${esc(x.sub.grade)}`:""}`:"Ещё не сдано"}</div>${x.sub?.answer?`<div class="tm">${esc(x.sub.answer.length>180?x.sub.answer.slice(0,180)+"…":x.sub.answer)}</div>`:""}</div>${x.sub?`<button class="btn" data-review-submission="${esc(x.sub.id)}">${x.sub.reviewed?"Открыть проверку":"Проверить"}</button>`:`<span class="submission-status">Ожидается</span>`}</div>`).join("");
+  const body=`<section class="submission-box"><h3 style="margin:0 0 8px">📬 Сдача обычного ДЗ · ${submitted}/${assigned.length} сдано</h3>${writtenRows||`<div class="tm">Нет учеников, назначенных на это задание.</div>`}</section>${homeworkCdzResults(h)}`;
+  return `<section class="hw-results-panel"><button class="btn" style="width:100%;display:flex;justify-content:space-between;align-items:center;margin-top:10px" data-toggle-hw-results="${esc(h.id)}" aria-expanded="${expanded}"><span>📊 Результаты этого ДЗ · ${submitted}/${assigned.length} сдано${attached.length?` · ЦДЗ: ${cdzPending} ожидают, ${cdzGraded} оценено`:""}</span><span>${expanded?"▲ Свернуть":"▼ Развернуть"}</span></button><div class="hw-results-content"${expanded?"":" hidden"}>${body}</div></section>`;
+}
+function homeworkCdzResults(h){
+  const attached=(h.tests||[]).map(id=>S.tests.find(t=>t.id===id)).filter(Boolean);
+  const rows=[];
+  for(const test of attached){
+    const results=S.testResults.filter(r=>r.hwId===h.id&&r.testId===test.id).sort((a,b)=>b.submittedAt.localeCompare(a.submittedAt));
+    const graded=S.gradeEntries.filter(g=>g.hwId===h.id&&g.cdzTestId===test.id);
+    rows.push(`<div class="grade-row"><div><b>${esc(test.title)}</b><div class="tm">${results.length?`${results.length} отправленный результат${results.length===1?"":"а"}`:"Результаты ещё не отправлены"}</div></div><span class="weight-badge">${graded.length?`Оценено: ${graded.map(g=>esc(STUDENTS[g.student]||"Ученик")+" — "+esc(g.grade)).join(", ")}`:results.length?"Ожидает оценки":"Ожидается"}</span></div>`);
+    for(const r of results)rows.push(`<div class="grade-row"><div><b>${esc(STUDENTS[r.student]||"Ученик")}</b><div class="tm">${r.score}/${r.total} · ${esc(new Date(r.submittedAt).toLocaleString("ru-RU"))}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-review-result="${esc(r.id)}">Проверить ответы</button><button class="btn primary" data-grade-result="${esc(r.id)}">Выставить оценку</button></div></div>`);
+  }
+  const gradedWithoutResult=S.gradeEntries.filter(g=>g.hwId===h.id&&g.cdzTestId&&!attached.some(t=>t.id===g.cdzTestId));
+  gradedWithoutResult.forEach(g=>rows.push(`<div class="grade-row"><div><b>${esc(STUDENTS[g.student]||"Ученик")}</b><div class="tm">Результат уже оценён</div></div><span class="weight-badge">Оценка: ${esc(g.grade)}</span></div>`));
+  return attached.length?`<section class="submission-box"><h3 style="margin:0 0 8px">📊 Результаты ЦДЗ по этому заданию</h3>${rows.join("")}</section>`:"";
+}
+
+function homework(){
+  if(isStudent())return hwStudent();
+  const list=S.hw.filter(h=>(!hwSelectedDate||h.date===hwSelectedDate)&&(hwFilter==="all"||String(h.subj)===hwFilter)).sort((a,b)=>b.date.localeCompare(a.date));
+  let out="",last="";
+  for(const h of list){
+    if(h.date!==last){last=h.date;const d=parse(h.date);out+=`<h2>${DAYF[(d.getDay()+6)%7]||"Выходной"}, ${fmt(d)}${h.date===todayIso?" (сегодня)":""}</h2>`}
+    out+=`<div class="item"><div class="s">${subjectHtml(h.subj)}<span class="tm">${esc(who(h))}</span></div><div class="t">${hwHtml(h)}${testButtons(h)}</div><div style="display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap"><button class="btn" data-edit-hw="${esc(h.id)}" title="Изменить домашнее задание">✏️ Изменить</button><button class="x" data-del="${esc(h.id)}" aria-label="Удалить задание" title="Удалить">×</button></div>${homeworkResultsPanel(h)}</div>`;
+  }
+  return `${hwViewControls()}<div class="bar"><label>Показать ${subjSelect("hwFilter",hwFilter,true)}</label>${hwSelectedDate?`<span class="tm">Дата: ${fmt(parse(hwSelectedDate))}</span><button class="btn" data-clear-calendar-filter>Показать все даты</button>`:""}</div><div class="panel"><div class="form">
+    <label>Предмет ${subjSelect("hwSubj",hwSubj)}</label>
+    <label>Дата <input type="date" id="hwDate" value="${hwDate}"${editHwId?"":` min="${todayIso}"`}></label>
+    <div class="wide"><div class="lbl">Кому</div>
+      <label class="chk"><input type="checkbox" id="hwAll"${hwAll?" checked":""}> Весь класс</label>
+      <div class="who">${STUDENTS.map((n,i)=>`<label class="chk"><input type="checkbox" data-who="${i}"${hwTo.includes(i)?" checked":""}${hwAll?" disabled":""}> ${esc(n)}</label>`).join("")}</div></div>
+    <label class="wide">Задание <textarea id="hwText" placeholder="Например: § 12, упр. 4–6">${esc(hwText)}</textarea></label>
+    <div class="wide"><div class="lbl"><b>📝 Прикрепить тесты из библиотеки</b></div><div class="who">${(S.tests||[]).map(t=>`<label class="chk"><input type="checkbox" data-hw-test="${esc(t.id)}"${hwTests.includes(t.id)?" checked":""}> ${esc(t.title)} <span class="tm">(${esc(SUBJ[t.subj]||"")} · ${t.questions.length} вопросов)</span></label>`).join("")||`<span class="tm">Сначала добавьте тесты во вкладке «Библиотека тестов».</span>`}</div></div>
+    <div class="wide"><div class="lbl"><b>🎯 Критерии оценивания отдельно для каждого ЦДЗ</b></div><div class="tm" style="margin-bottom:8px">Сначала выберите тесты выше. Для каждого прикреплённого теста задайте свои диапазоны баллов для оценок 2–5. Границы включаются в диапазон.</div>${hwTests.map(id=>{const test=S.tests.find(x=>x.id===id);return test?`<section class="panel" style="margin:10px 0;padding:12px"><h3 style="margin:0 0 8px">📝 ${esc(test.title)}</h3><div class="criteria-grid">${cdzCriteriaFields(hwCdzCriteriaByTest[id]||hwCdzCriteria,id)}</div><div class="tm" style="margin-top:8px">Если «От» и «До» одинаковые, оценка ставится за точное количество баллов.</div></section>`:""}).join("")||`<div class="empty">Выберите один или несколько тестов, чтобы настроить критерии для каждого ЦДЗ.</div>`}</div>
+    <div class="wide"><label>Файлы (до 1 МБ каждый) <input type="file" id="hwFiles" multiple accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.txt,.md,.csv,.docx,.xlsx,.pptx,.zip"></label>${editHwId&&S.hw.find(h=>h.id===editHwId)?.files?.length?`<div class="tm">Существующие файлы сохранятся: ${S.hw.find(h=>h.id===editHwId).files.map(f=>esc(f.name)).join(", ")}</div>`:""}<div id="pend">${pendHtml()}</div></div>
+    <div class="wide" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-add>${editHwId?"Сохранить изменения":"Задать домашнее задание"}</button>${editHwId?`<button class="btn" data-cancel-hw-edit>Отмена</button>`:""}</div></div></div><div class="panel">${out||`<div class="empty">Заданий пока нет. Добавьте первое в форме выше.</div>`}</div>`;
+}
+
+function questionEditor(i){
+  return `<section class="panel question-editor" data-question-index="${i}" style="margin:12px 0;padding:14px;background:var(--bg)">
+    <div class="bar"><b class="question-number">Вопрос ${i+1}</b><span class="sp"></span><button type="button" class="btn" data-remove-question title="Удалить вопрос">✕ Удалить</button></div>
+    <label class="wide">Текст вопроса<textarea class="qe-text" rows="2" placeholder="Напишите вопрос…"></textarea></label>
+    <div class="form" style="margin-top:10px">${[0,1,2,3].map(j=>`<label>Вариант ${j+1}<input class="qe-option" data-option="${j}" placeholder="Текст ответа ${j+1}"></label>`).join('')}</div>
+    <div style="margin-top:12px"><div class="lbl"><b>Правильные ответы</b></div><p class="tm">Отметьте один или несколько вариантов. Если правильных несколько, ученик должен выбрать все правильные ответы и не выбирать лишние.</p><div class="who">${[0,1,2,3].map(j=>`<label class="chk"><input type="checkbox" class="qe-correct" value="${j}"> Вариант ${j+1} — правильный</label>`).join('')}</div></div>
+  </section>`;
+}
+function testsLibrary(){
+  const tests=S.tests||[];
+  const cards=tests.map(t=>`<section class="panel test-card"><div class="s">${subjectHtml(t.subj)} <span class="tm">${t.questions.length} вопр.</span></div><h3>${esc(t.title)}</h3><p class="tm">${esc(t.questions.slice(0,2).map(q=>q.q).join(" · "))}${t.questions.length>2?" …":""}</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-preview-test="${esc(t.id)}">👀 Просмотреть</button><button class="btn" data-delete-test="${esc(t.id)}">Удалить</button></div></section>`).join("");
+  return `<div class="panel"><h2>📚 Библиотека тестов</h2><p class="empty">Создайте тест с помощью отдельных карточек вопросов. Можно отметить несколько правильных ответов в одном вопросе.</p><div class="form"><label>Название теста<input id="testTitle" placeholder="Например: Дроби и проценты"></label><label>Предмет ${subjSelect("testSubj",0,false)}</label></div><div class="quiz-settings"><b>⚙️ Настройки теста</b><div class="who"><label class="chk"><input type="checkbox" id="testShuffleQuestions"> Перемешивать вопросы</label><label class="chk"><input type="checkbox" id="testShuffleOptions"> Перемешивать варианты ответов</label></div><label style="margin-top:10px">Ограничение времени (минуты, необязательно)<input id="testTimeLimit" type="number" min="0" max="180" step="1" value="0" placeholder="0 — без ограничения"></label><p class="tm">Перемешивание создаёт случайный порядок при каждом запуске. При ограничении времени тест отправится автоматически.</p></div><div class="bar" style="margin-top:18px"><h3 style="margin:0">Вопросы теста</h3><span class="sp"></span><button type="button" class="btn" data-new-question>＋ Новый вопрос</button></div><div id="questionEditors">${questionEditor(0)}</div><div class="wide" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="btn primary" data-create-test>✓ Сохранить тест в библиотеку</button><button class="btn" data-new-question>＋ Новый вопрос</button></div></div><div class="bar"><h2 style="margin:0">Тесты в библиотеке (${tests.length})</h2></div>${cards||`<div class="panel empty">Пока нет тестов. Создайте первый выше.</div>`}`;
+}
+function correctIndices(q){return Array.isArray(q.corrects)?q.corrects:(q.correct!==undefined?[q.correct]:[])}
+function shuffledIndices(n,shuffle){const a=Array.from({length:n},(_,i)=>i);if(shuffle)for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function testRunner(id,hwId=null){
+  const t=S.tests.find(x=>x.id===id);if(!t)return;
+  activeTestId=id;activeHwId=hwId;
+  const qOrder=shuffledIndices(t.questions.length,!!t.shuffleQuestions);
+  activeTestLayout=qOrder.map(qi=>({qi,options:shuffledIndices(t.questions[qi].options.length,!!t.shuffleOptions)}));
+  document.getElementById("dlg").innerHTML=`<h2>${esc(t.title)}</h2><p class="tm">${subjectHtml(t.subj)} · ${t.questions.length} вопросов ${t.timeLimit?`· <span id="quizTimer" class="quiz-timer">${t.timeLimit}:00</span>`:""}</p><form id="testForm">${activeTestLayout.map((layout,displayIndex)=>{const q=t.questions[layout.qi],multi=correctIndices(q).length>1;return `<section class="panel" style="margin:12px 0"><b>${displayIndex+1}. ${esc(q.q)}</b>${multi?`<p class="tm" style="margin-top:5px">Выберите все правильные ответы</p>`:""}<div style="display:grid;gap:8px;margin-top:10px">${layout.options.map((originalIndex,displayOption)=>`<label class="chk"><input type="${multi?"checkbox":"radio"}" name="q${displayIndex}" value="${displayOption}"> ${esc(q.options[originalIndex])}</label>`).join("")}</div></section>`}).join("")}<div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn" data-close>Отмена</button><button type="button" class="btn primary" data-submit-test>Проверить ответы</button></div></form>`;
+  document.getElementById("veil").classList.add("on");
+  if(activeTestTimer){clearInterval(activeTestTimer);activeTestTimer=null}
+  if(t.timeLimit>0){activeTestDeadline=Date.now()+t.timeLimit*60000;const tick=()=>{const left=Math.max(0,Math.ceil((activeTestDeadline-Date.now())/1000)),el=document.getElementById("quizTimer");if(el)el.textContent=Math.floor(left/60)+":"+String(left%60).padStart(2,"0");if(left<=0)finishTest(true)};tick();activeTestTimer=setInterval(tick,500)}
+}
+function finishTest(auto=false){
+  const test=S.tests.find(x=>x.id===activeTestId);if(!test)return;
+  if(activeTestTimer){clearInterval(activeTestTimer);activeTestTimer=null}
+  let score=0,answered=0;const answers=Array.from({length:test.questions.length},()=>[]);
+  activeTestLayout.forEach((layout,displayIndex)=>{const chosenDisplay=[...document.querySelectorAll(`input[name="q${displayIndex}"]:checked`)].map(a=>+a.value),chosen=chosenDisplay.map(i=>layout.options[i]);answers[layout.qi]=chosen;if(chosen.length)answered++;const correct=correctIndices(test.questions[layout.qi]);if(chosen.length===correct.length&&chosen.every(v=>correct.includes(v))&&correct.every(v=>chosen.includes(v)))score++});
+  if(isStudent()){S.testResults.push({id:"result-"+Math.random().toString(36).slice(2),testId:test.id,hwId:activeHwId,student:S.me,score,total:test.questions.length,answers,submittedAt:new Date().toISOString(),timeExpired:!!auto});save()}
+  document.getElementById("dlg").innerHTML=`<h2>Результат теста</h2><div class="panel" style="text-align:center;padding:28px"><div style="font-size:42px;font-weight:800;color:var(--accent)">${score} из ${test.questions.length}</div><p>Правильных ответов: ${score}. Отвечено: ${answered} из ${test.questions.length}.</p><p>${Math.round(score/test.questions.length*100)}% правильных ответов</p>${auto?`<p class="result-bad">Время закончилось — ответы отправлены автоматически.</p>`:""}${isStudent()?`<p class="result-good">Результат отправлен учителю.</p>`:""}</div><div style="display:flex;justify-content:flex-end"><button class="btn primary" data-close>Готово</button></div>`;
+}
+function submissionFilesHtml(sub){return (sub?.files||[]).map(f=>`<a class="btn fbtn" href="${esc(f.data)}" download="${esc(f.name)}">📎 ${esc(f.name)}</a>`).join(" ")}
+function openHomeworkSubmission(hwId){
+  const h=S.hw.find(x=>x.id===hwId);if(!h)return;const existing=submissionFor(hwId,student);submissionFiles=[];
+  document.getElementById("dlg").innerHTML=`<h2>📤 Сдать домашнее задание</h2><p>${subjectHtml(h.subj)} · ${fmt(parse(h.date))}</p><section class="panel"><b>Задание</b><p style="white-space:pre-wrap">${esc(h.text||"Откройте прикреплённые материалы и выполните задание.")}</p>${filesHtml(h)}${testButtons(h)}</section><form class="hw-submit-form"><label>Твой ответ / комментарий<textarea id="submissionAnswer" placeholder="Напиши ответ, решение или комментарий…">${esc(existing?.answer||"")}</textarea></label><label style="margin-top:10px">Прикрепить файл (до 1 МБ каждый)<input id="submissionFileInput" type="file" multiple accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.txt,.md,.csv,.docx,.xlsx,.pptx,.zip"></label><div class="tm">${existing?.files?.length?`Уже приложено: ${existing.files.map(f=>esc(f.name)).join(", ")}. `:""}Можно отправить текст и файлы. Прикреплённые тесты сдаются отдельно кнопкой теста.</div><div id="submissionPending" class="files"></div><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px"><button type="button" class="btn" data-close>Отмена</button><button type="button" class="btn primary" data-save-submission="${esc(hwId)}">Отправить учителю</button></div></form>`;
+  document.getElementById("veil").classList.add("on");
+}
+function reviewSubmission(id){
+  const sub=S.hwSubmissions.find(x=>x.id===id);if(!sub)return;const h=S.hw.find(x=>x.id===sub.hwId);
+  document.getElementById("dlg").innerHTML=`<h2>Проверка домашней работы</h2><p>${esc(STUDENTS[sub.student]||"Ученик")} · ${esc(h?SUBJ[h.subj]:"Задание")}</p><section class="panel"><b>Ответ ученика</b><p style="white-space:pre-wrap">${esc(sub.answer||"Ответ не добавлен")}</p>${sub.files?.length?`<div style="margin:8px 0"><b>Вложения</b><div class="files">${submissionFilesHtml(sub)}</div></div>`:""}<span class="tm">Отправлено: ${esc(new Date(sub.submittedAt).toLocaleString("ru-RU"))}</span></section><label>Комментарий учителя<textarea id="teacherComment" placeholder="Что получилось хорошо и что исправить…">${esc(sub.teacherComment||"")}</textarea></label><div class="form" style="margin-top:10px"><label>Оценка (необязательно)<select id="submissionGrade"><option value="">Без оценки</option>${GRADES.map(g=>`<option value="${g}"${String(sub.grade||"")===g?" selected":""}>${g}</option>`).join("")}</select></label></div><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px"><button class="btn" data-dot-submission="${esc(id)}">• Поставить точку</button><button class="btn" data-close>Закрыть</button><button class="btn primary" data-save-review="${esc(id)}">Сохранить проверку</button></div>`;
+  document.getElementById("veil").classList.add("on");
+}
+function testButtons(h){
+ const ids=(h.tests||[]);if(!ids.length)return "";
+ return `<div class="attached-tests"><b>📝 Тесты к заданию</b><div class="test-link-list">${ids.map(id=>{const t=S.tests.find(x=>x.id===id);return t?`<button class="btn" data-run-test="${esc(id)}" data-hw-id="${esc(h.id)}">▶ ${esc(t.title)} (${t.questions.length} вопр.)</button>`:""}).join("")}</div></div>`;
+}
+
+function parseCdzCriteria(raw){
+  const ranges={"2":{from:"0",to:"1"},"3":{from:"2",to:"3"},"4":{from:"4",to:"5"},"5":{from:"6",to:"6"}};
+  const parts=String(raw||"").split(/[,;\n]+/).map(x=>x.trim()).filter(Boolean);
+  for(const part of parts){
+    let m=part.match(/^(\d+)\s*(?:-|–|—)\s*(\d+)\s*=\s*([2-5])$/);
+    if(m)ranges[m[3]]={from:m[1],to:m[2]};
+    else {m=part.match(/^(\d+)\s*=\s*([2-5])$/);if(m)ranges[m[2]]={from:m[1],to:m[1]};}
+  }
+  return ranges;
+}
+function cdzCriteriaFields(raw,testId){
+  const ranges=parseCdzCriteria(raw),tid=String(testId||"");
+  return [2,3,4,5].map(g=>`<div class="panel" style="padding:10px;margin:0"><b>Оценка ${g}</b><div class="form" style="margin-top:8px;gap:6px"><label>От <input type="number" min="0" step="1" data-cdz-from="${esc(tid)}" data-cdz-grade="${g}" value="${esc(ranges[g].from)}" placeholder="Баллы от"></label><label>До <input type="number" min="0" step="1" data-cdz-to="${esc(tid)}" data-cdz-grade="${g}" value="${esc(ranges[g].to)}" placeholder="Баллы до"></label></div></div>`).join("");
+}
+function readCdzCriteriaForTest(testId){
+  const parts=[];
+  for(const g of [2,3,4,5]){
+    const from=document.querySelector(`[data-cdz-from="${CSS.escape(String(testId))}"][data-cdz-grade="${g}"]`)?.value??"",to=document.querySelector(`[data-cdz-to="${CSS.escape(String(testId))}"][data-cdz-grade="${g}"]`)?.value??"";
+    if(from===""||to==="")return null;
+    const a=Number(from),b=Number(to);
+    if(!Number.isInteger(a)||!Number.isInteger(b)||a<0||b<a)return null;
+    parts.push(`${a}-${b}=${g}`);
+  }
+  return parts.join(", ");
+}
+function readCdzCriteriaMapForm(){
+  const map={};
+  for(const id of hwTests){const value=readCdzCriteriaForTest(id);if(value)map[id]=value;}
+  return map;
+}
+
+function gradeFromCdzResult(r,h){
+  const raw=(h?.cdzCriteriaByTest?.[r.testId]||h?.cdzCriteria||"0-1=2, 2-3=3, 4-5=4, 6=5").trim();
+  const score=Number(r.score)||0;
+  const parts=raw.split(/[,;\n]+/).map(x=>x.trim()).filter(Boolean);
+  for(const part of parts){
+    let m=part.match(/^(\d+)\s*(?:-|–|—)\s*(\d+)\s*=\s*([2-5])$/);
+    if(m&&score>=+m[1]&&score<=+m[2])return m[3];
+    m=part.match(/^(\d+)\s*=\s*([2-5])$/);
+    if(m&&score===+m[1])return m[2];
+  }
+  const ratio=(Number(r.total)>0?score/Number(r.total):0);
+  return ratio>=.85?"5":ratio>=.7?"4":ratio>=.5?"3":"2";
+}
+
+function cdzResults(){
+  const results=S.testResults.slice().sort((a,b)=>b.submittedAt.localeCompare(a.submittedAt));
+  const groups=S.hw.filter(h=>(h.tests||[]).length).map(h=>{
+    const rows=results.filter(r=>r.hwId===h.id);
+    const tests=(h.tests||[]).map(id=>S.tests.find(t=>t.id===id)).filter(Boolean);
+    const graded=S.gradeEntries.filter(g=>g.hwId===h.id&&g.cdzTestId);
+    return `<section class="panel result-card"><div class="bar"><div><b>${subjectHtml(h.subj)} · ${esc(h.text||"Домашнее задание")}</b><div class="tm">ДЗ от ${fmt(parse(h.date))} · Тестов: ${tests.length}</div></div><span class="weight-badge">${rows.length} результат${rows.length===1?"":"ов"} · ${graded.length} оценено</span></div>${tests.map(t=>`<h3 style="margin:12px 0 6px">${esc(t.title)}</h3>${rows.filter(r=>r.testId===t.id).map(r=>`<div class="grade-row"><div><b>${esc(STUDENTS[r.student]||"Ученик")}</b><div class="tm">${r.score}/${r.total} (${Math.round(r.score/r.total*100)}%) · ${esc(new Date(r.submittedAt).toLocaleString("ru-RU"))}</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-review-result="${esc(r.id)}">Проверить ответы</button><button class="btn primary" data-grade-result="${esc(r.id)}">Выставить оценку</button></div></div>`).join("")||`<div class="tm">Пока нет отправленных результатов этого теста.</div>`}`).join("")}</section>`;
+  }).join("");
+  const unlinked=results.filter(r=>!S.hw.some(h=>h.id===r.hwId));
+  const unlinkedHtml=unlinked.map(r=>{const t=S.tests.find(x=>x.id===r.testId);return `<section class="panel result-card"><div class="bar"><div><b>${esc(STUDENTS[r.student]||"Ученик")}</b><div class="tm">${esc(t?.title||"Тест без задания")}</div></div><span>${r.score}/${r.total}</span></div><button class="btn" data-review-result="${esc(r.id)}">Проверить ответы</button> <button class="btn primary" data-grade-result="${esc(r.id)}">Выставить оценку</button></section>`}).join("");
+  return `<div class="bar"><h2 style="margin:0">Проверка результатов ЦДЗ</h2><span class="sp"></span><span class="tm">Ожидают оценки: ${results.length}</span></div><p class="empty">Результаты сгруппированы по каждому домашнему заданию. После выставления оценки результат отправки удаляется из ожидающих, а оценка сохраняется в журнале и отображается у соответствующего ДЗ.</p>${groups||""}${unlinkedHtml}${!groups&&!unlinkedHtml?`<div class="panel empty">Пока нет домашних заданий с прикреплёнными тестами. Добавьте тест к ДЗ, затем откройте профиль ученика и выполните его.</div>`:""}`;
+}
+function reviewResult(id){const r=S.testResults.find(x=>x.id===id);if(!r)return;const t=S.tests.find(x=>x.id===r.testId);if(!t)return;document.getElementById("dlg").innerHTML=`<h2>Ответы ученика</h2><p>${esc(STUDENTS[r.student])} · ${esc(t.title)} · ${r.score}/${r.total}</p>${t.questions.map((q,i)=>{const chosen=Array.isArray(r.answers[i])?r.answers[i]:(r.answers[i]===null||r.answers[i]===undefined?[]:[r.answers[i]]),correct=correctIndices(q),ok=chosen.length===correct.length&&chosen.every(v=>correct.includes(v))&&correct.every(v=>chosen.includes(v));return `<section class="panel" style="margin:8px 0"><b>${i+1}. ${esc(q.q)}</b><div class="tm">Ответ ученика: ${chosen.length?esc(chosen.map(v=>q.options[v]).join(", ")):"Нет ответа"}</div><div class="${ok?"result-good":"result-bad"}">${ok?"Верно":"Неверно"} · Правильный ответ: ${esc(correct.map(v=>q.options[v]).join(", "))}</div></section>`}).join("")}<div style="display:flex;justify-content:flex-end;gap:8px"><button class="btn" data-dot-result="${esc(r.id)}">• Поставить точку</button><button class="btn" data-close>Закрыть</button></div>`;document.getElementById("veil").classList.add("on")}
+function absences(){
+  const ds=weekDays();
+  const head=ds.map((d,i)=>`<th><small>${DAYS[i]}</small><span class="${iso(d)===todayIso?"today":""}">${d.getDate()}</span></th>`).join("");
+  const rows=STUDENTS.map((n,si)=>`<tr><td>${esc(n)}</td>${ds.map(d=>{
+    const k=si+"|"+iso(d),v=S.abs[k]||"";
+    return `<td><select class="rs${v?(v==="Без уважительной причины"?" bad":" has"):""}" data-ab="${k}"${iso(d)<todayIso?" disabled":""} aria-label="${esc(n)}, ${fmt(d)}"><option value="">Присутствует</option>${REASONS.map(r=>`<option${r===v?" selected":""}>${r}</option>`).join("")}</select></td>`;
+  }).join("")}</tr>`).join("");
+  return `<div class="bar">${weekNav()}</div>
+  <div class="scroll"><table style="min-width:900px"><thead><tr><th>Ученик</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>
+  <p class="empty">Выберите причину в клетке ученика, чтобы отметить его отсутствие в этот день (только за сегодня и будущие дни).</p>`;
+}
+
+function diary(){
+  const ds=weekDays();
+  const days=ds.map((d,i)=>{
+    const k=iso(d);
+    const rows=SUBJ.map((s,sj)=>{
+      const v=S.grades[student+"|"+sj+"|"+k];
+      const hs=S.hw.filter(h=>h.subj===sj&&h.date===k&&forMe(h,student));
+      if(!v&&!hs.length)return "";
+      return `<div class="entry"><div class="diary-subject">${subjectHtml(sj)}</div><div class="t">${hs.map(hwHtml).join("")||"Домашнее задание не задано"}</div><div class="gw">${chip(v)}</div></div>`;
+    }).join("");
+    return `<div class="panel day"><h3 class="${k===todayIso?"today":""}">${DAYF[i]}, ${fmt(d)}${S.abs[student+"|"+k]?`<span class="absb">Отсутствует: ${esc(S.abs[student+"|"+k])}</span>`:""}</h3>${rows||`<div class="empty">Записей нет</div>`}</div>`;
+  }).join("");
+  const avgs=SUBJ.map((s,sj)=>{const value=avg(student,sj);return `<div class="average-card ${averageClass(value)}">${subjectHtml(sj)}<div class="average-info"><div class="average-name">Средний балл</div><div class="average-value">${value}</div></div></div>`}).join("");
+  return `<div class="bar">${weekNav()}<span class="sp"></span>${isStudent()?"":`<label>Ученик <select id="student">${STUDENTS.map((n,i)=>`<option value="${i}"${i===student?" selected":""}>${esc(n)}</option>`).join("")}</select></label>`}</div>
+  <div class="panel"><b>Средний балл по предметам</b><div class="average-grid">${avgs}</div></div>${days}`;
+}
+
+function studentGrades(){
+  const prefix=student+"|";
+  const entries=Object.entries(S.grades).map(([key,value])=>{const parts=key.split("|");return {key,value,si:+parts[0],sj:+parts[1],date:parts[2],criterion:"Оценка",weight:1};}).filter(x=>x.si===student&&x.date&&x.sj>=0&&x.sj<SUBJ.length&&!S.gradeEntries.some(g=>g.student===x.si&&g.subj===x.sj&&g.date===x.date)).concat(S.gradeEntries.filter(x=>x.student===student).map(x=>({...x,si:x.student,sj:x.subj,value:x.grade}))).sort((a,b)=>b.date.localeCompare(a.date)||a.sj-b.sj);
+  const toggle=`<div class="grade-view-toggle" role="group" aria-label="Группировка оценок"><button class="btn${gradeView==="date"?" primary":""}" data-gradeview="date" aria-pressed="${gradeView==="date"}">🗓️ По датам</button><button class="btn${gradeView==="subject"?" primary":""}" data-gradeview="subject" aria-pressed="${gradeView==="subject"}">📚 По предметам</button></div>`;
+  let content="";
+  if(gradeView==="date"){
+    const groups={};
+    entries.forEach(e=>(groups[e.date]??=[]).push(e));
+    content=Object.keys(groups).sort((a,b)=>b.localeCompare(a)).map(date=>{
+      const d=parse(date),dow=(d.getDay()+6)%7;
+      const rows=groups[date].map(e=>`<div class="grade-entry"><div class="grade-entry-subject">${subjectHtml(e.sj)}<small class="grade-criterion">${esc(e.criterion||"Оценка")} · ×${e.weight||1}</small></div><button type="button" class="grade-entry-value" data-grade-detail="${esc(e.id||"")}" ${e.id?"":"disabled"}>${chip(e.value)}</button></div>`).join("");
+      return `<section class="panel grade-day"><h3>${DAYF[dow]||"Выходной"}, ${fmt(d)}${date===todayIso?` <span class="today">· сегодня</span>`:""}</h3>${rows}</section>`;
+    }).join("")||`<div class="panel empty">Оценок пока нет.</div>`;
+  }else{
+    content=SUBJ.map((name,sj)=>{
+      const list=entries.filter(e=>e.sj===sj).sort((a,b)=>b.date.localeCompare(a.date));
+      const value=avg(student,sj);
+      const rows=list.map(e=>`<div class="grade-entry"><span class="grade-entry-date">${fmt(parse(e.date))} <span class="tm">${esc(e.criterion||"Оценка")} · ×${e.weight||1}</span></span><button type="button" class="grade-entry-value" data-grade-detail="${esc(e.id||"")}" ${e.id?"":"disabled"}>${chip(e.value)}</button></div>`).join("");
+      return `<section class="panel grade-subject"><div class="grade-subject-head">${subjectHtml(sj)}<span class="grade-average ${averageClass(value)}">Средний: ${value}</span></div>${rows||`<div class="empty">Оценок по предмету пока нет.</div>`}</section>`;
+    }).join("");
+  }
+  return `<div class="bar"><h2 style="margin:0">Мои оценки</h2><span class="sp"></span>${toggle}</div><p class="empty">Все выставленные оценки ученика. Выберите группировку: по дате получения или по предмету.</p>${content}`;
+}
+
+function schedule(){
+  const ds=weekDays();
+  const head=ds.map((d,i)=>`<th><small>${DAYF[i]}</small><span class="${iso(d)===todayIso?"today":""}">${fmt(d)}</span></th>`).join("");
+  const rows=TIMES.map((t,n)=>{
+    if(!ds.some((_,i)=>SCHED[i][n]>=0))return "";
+    return `<tr><td><b>${n+1} урок</b><span class="tm">${t}</span></td>${ds.map((d,i)=>{
+      const sj=SCHED[i][n];
+      if(sj<0)return `<td class="sc none">—</td>`;
+      const hs=S.hw.filter(h=>h.subj===sj&&h.date===iso(d)&&(!isStudent()||forMe(h,student)));
+      const date=iso(d),grades=S.gradeEntries.filter(x=>x.student===student&&x.subj===sj&&x.date===date),legacy=S.grades[student+"|"+sj+"|"+date];
+      const gradeHtml=isStudent()&&(grades.length||legacy)?`<div class="sh grade-highlight"><span class="tm">Оценки</span>${grades.map(g=>`<div>${esc(g.criterion)} · ${chip(g.grade)} <span class="tm">×${g.weight}</span></div>`).join("")||chip(legacy)}</div>`:"";
+      const body=hs.length?hs.map(h=>`<div class="sh">${hwHtml(h)}${h.to&&!isStudent()?`<span class="tm">Для: ${esc(who(h))}</span>`:""}</div>`).join(""):`<div class="tm">ДЗ не задано</div>`;
+      return `<td class="sc"><div class="ss">${subjectHtml(sj)}</div>${gradeHtml}${body}</td>`;
+    }).join("")}</tr>`;
+  }).join("");
+  return `<div class="bar">${weekNav()}</div>
+  <div class="scroll"><table style="min-width:900px"><thead><tr><th>Урок</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>
+  <p class="empty">Расписание уроков на неделю с домашними заданиями. В профиле ученика оценки отображаются рядом с соответствующими уроками. Переключайте недели стрелками.</p>`;
+}
+
+function renderJournalAfterModal(){const a=document.getElementById("app");if(a)a.innerHTML=journal()}
+function render(){
+  resolveDots();
+  if(isStudent()){student=S.me;if(tab==="journal"||tab==="abs"||tab==="diary")tab="sched"}
+  document.getElementById("prof").innerHTML=`<label>Профиль <select id="role"><option value="teacher"${isStudent()?"":" selected"}>Учитель</option><option value="student"${isStudent()?" selected":""}>Ученик</option></select></label>${isStudent()?`<label>Я — <select id="me">${STUDENTS.map((n,i)=>`<option value="${i}"${i===S.me?" selected":""}>${esc(n)}</option>`).join("")}</select></label>`:""}<button class="btn" type="button" data-autosave>Подключить файл автосохранения</button><span id="saveStatus" class="tm">Сохранение в браузере</span>`;
+  document.querySelectorAll("nav button").forEach(b=>{b.hidden=(isStudent()&&(b.dataset.tab==="journal"||b.dataset.tab==="abs"||b.dataset.tab==="tests"||b.dataset.tab==="cdz"))||(!isStudent()&&b.dataset.tab==="grades")});
+  document.querySelectorAll("nav button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===tab));
+  document.getElementById("app").innerHTML=tab==="journal"?journal():tab==="hw"?homework():tab==="tests"&&!isStudent()?testsLibrary():tab==="cdz"&&!isStudent()?cdzResults():tab==="abs"?absences():tab==="grades"&&isStudent()?studentGrades():schedule();
+}
+
+let pick=null;
+function showGradeDetails(id){
+  const g=S.gradeEntries.find(x=>x.id===id);if(!g)return;
+  const when=g.createdAt?new Date(g.createdAt).toLocaleString("ru-RU"):"Время выставления не сохранено (старая отметка)";
+  document.getElementById("dlg").innerHTML=`<h2>Подробности оценки</h2><p><b>${esc(STUDENTS[g.student]||"Ученик")}</b> · ${esc(SUBJ[g.subj]||"Предмет")}</p><section class="panel"><div class="grade-entry-value" style="font-size:24px">${chip(g.grade)}</div><p><b>За что:</b> ${esc(g.criterion||"Оценка")}</p><p><b>Выставлена:</b> ${esc(when)}<br><b>Дата в журнале:</b> ${esc(fmt(parse(g.date)))}</p><p><b>Коэффициент:</b> ×${Number(g.weight)||1}</p><p><b>Комментарий:</b> ${esc(g.comment||"Без комментария")}</p></section><div style="display:flex;justify-content:flex-end;gap:8px"><button class="btn" data-edit-grade="${esc(g.id)}">✏️ Изменить</button><button class="btn" data-close>Закрыть</button></div>`;
+  document.getElementById("veil").classList.add("on");
+}
+function openJournalPoint(si,sj,date,criterion){
+  closePick();student=si;subj=sj;tab="journal";render();openPick(si,date,true);
+  const sel=document.getElementById("dotCriterion");if(sel){const found=[...sel.options].some(o=>o.value===criterion);sel.value=found?criterion:"Другое";sel.dispatchEvent(new Event("change"));if(!found){const custom=document.getElementById("dotCustomCriterion");if(custom)custom.value=criterion||"";}}
+}
+function openPick(si,date,allowPast=false){
+  const past=date<todayIso;if(past&&!editGradeId&&!allowPast){note("Нельзя добавлять оценки за прошедшие дни");return}
+  pick={si,date};const list=S.gradeEntries.filter(x=>x.student===si&&x.subj===subj&&x.date===date),key=si+"|"+subj+"|"+date,dot=S.dots[key],editing=editGradeId?S.gradeEntries.find(x=>x.id===editGradeId):null;
+  document.getElementById("dlg").innerHTML=`<h2>Оценки за день</h2><p><b>${esc(STUDENTS[si])}</b> · ${esc(SUBJ[subj])} · ${fmt(parse(date))}</p>
+  <section class="panel"><h3>${editing?"Изменить отметку":"Добавить оценку"}</h3><div class="form"><label>Критерий<select id="gradeCriterion">${GRADE_CRITERIA.map(c=>`<option value="${esc(c)}"${editing&&(editing.criterion===c||(!GRADE_CRITERIA.includes(editing.criterion)&&c==="Другое"))?" selected":""}>${esc(c)}</option>`).join("")}</select></label><label id="gradeCustomWrap" style="${editing&&!GRADE_CRITERIA.includes(editing.criterion)?"":"display:none"}">За что оценка? <input id="gradeCustomCriterion" placeholder="Например: доклад о планетах" value="${esc(editing&&!GRADE_CRITERIA.includes(editing.criterion)?editing.criterion:"")}"></label><label>Оценка<select id="gradeValue">${GRADES.map(v=>`<option${editing&&String(editing.grade)===v?" selected":""}>${v}</option>`).join("")}</select></label><label>Коэффициент<select id="gradeWeight"><option value="1"${!editing||Number(editing.weight)===1?" selected":""}>Одинарный ×1</option><option value="2"${editing&&Number(editing.weight)===2?" selected":""}>Двойной ×2</option><option value="3"${editing&&Number(editing.weight)===3?" selected":""}>Тройной ×3</option></select></label><label>Комментарий (необязательно)<input id="gradeComment" placeholder="Например: § 4, вариант 2" value="${esc(editing?.comment||"")}"></label><div class="wide"><button class="btn primary" data-add-grade>${editing?"💾 Сохранить отметку":"＋ Добавить оценку"}</button>${editing?` <button class="btn" data-cancel-grade-edit>Отмена</button>`:""}</div></div></section>
+  <section class="panel"><h3>Запланировать оценку («точку»)</h3><p class="tm">Точка станет обычной оценкой в выбранную дату. Критерий и коэффициент учитываются в среднем балле так же, как у остальных оценок.</p><div class="form"><label>Критерий<select id="dotCriterion">${GRADE_CRITERIA.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("")}</select></label><label id="dotCustomWrap" style="display:none">За что оценка? <input id="dotCustomCriterion" placeholder="Например: доклад о планетах"></label><label>Будущая оценка<select id="dotG">${GRADES.map(v=>`<option>${v}</option>`).join("")}</select></label><label>Коэффициент<select id="dotWeight"><option value="1">Одинарный ×1</option><option value="2">Двойной ×2</option><option value="3">Тройной ×3</option></select></label><label>Когда выставить<input id="dotD" type="date" min="${date}" value="${date}"></label><label class="wide">Комментарий (необязательно)<input id="dotComment" placeholder="Например: ответ у доски"></label><div class="wide"><button class="btn" data-dot>＋ Поставить точку</button></div></div>${dot?`<div class="grade-row"><div><b class="grade-dot">•</b> ${esc(dot.criterion||"Оценка")} · ${dot.grade} <span class="weight-badge">×${Number(dot.weight)||1}</span><div class="tm">Будет выставлена: ${fmt(parse(dot.on))}${dot.comment?" · "+esc(dot.comment):""}</div></div><button class="btn" data-remove-dot>Убрать точку</button></div>`:""}</section>
+  <section class="panel"><h3>Выставленные оценки (${list.length})</h3>${list.map(x=>`<div class="grade-row"><div><b>${chip(x.grade)}</b> ${esc(x.criterion)} <span class="weight-badge">×${x.weight}</span>${x.comment?`<div class="tm">${esc(x.comment)}</div>`:""}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-edit-grade="${esc(x.id)}">✏️ Изменить</button><button class="btn" data-remove-grade="${esc(x.id)}">Удалить</button></div></div>`).join("")||`<div class="empty">Пока нет оценок по критериям за этот день.</div>`}</section>
+  <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" data-close>Готово</button></div>`;
+  document.getElementById("veil").classList.add("on");
+}
+const closePick=()=>{pick=null;editGradeId=null;if(activeTestTimer){clearInterval(activeTestTimer);activeTestTimer=null}document.getElementById("veil").classList.remove("on")};
+
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-grade-detail],button,#veil");if(!t)return;
+  if(t.id==="veil"){if(e.target===t)closePick();return}
+  const d=t.dataset;
+  if(d.autosave!==undefined){connectDataFile()}
+  else if(d.tab){tab=d.tab;render()}
+  else if(d.previewTest){testRunner(d.previewTest)}
+  else if(d.runTest){testRunner(d.runTest,d.hwId||null)}
+  else if(d.close!==undefined)closePick();
+  else if(d.submitTest!==undefined){finishTest(false)}
+  else if(d.hwView){hwView=d.hwView;render()}
+  else if(d.toggleHwResults){hwResultsExpanded[d.toggleHwResults]=!hwResultsExpanded[d.toggleHwResults];render()}
+  else if(d.clearCalendarFilter!==undefined){hwSelectedDate="";render()}
+  else if(d.month!==undefined){const v=+d.month;if(v===0)calendarMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1);else calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()+v,1);render()}
+  else if(d.calendarDate){hwSelectedDate=d.calendarDate;if(d.calendarDate>=todayIso&&!isStudent())hwDate=d.calendarDate;hwView="list";editHwId=null;hwText="";hwTests=[];hwCdzCriteria="0-1=2, 2-3=3, 4-5=4, 6=5";hwCdzCriteriaByTest={};pendFiles=[];hwTo=[];hwAll=true;tab="hw";render();document.getElementById("hwDate")?.focus()}
+  else if(d.submitHw){openHomeworkSubmission(d.submitHw)}
+  else if(d.saveSubmission){const hwId=d.saveSubmission,answer=(document.getElementById("submissionAnswer")?.value||"").trim();let sub=submissionFor(hwId,student);if(sub){if(sub.gradeEntryId)S.gradeEntries=S.gradeEntries.filter(x=>x.id!==sub.gradeEntryId);delete sub.gradeEntryId;sub.answer=answer;sub.files=[...(sub.files||[]),...submissionFiles];sub.submittedAt=new Date().toISOString();sub.reviewed=false;sub.teacherComment="";sub.grade=""}else{S.hwSubmissions.push({id:"submission-"+Math.random().toString(36).slice(2),hwId,student,answer,files:submissionFiles.slice(),submittedAt:new Date().toISOString(),reviewed:false,teacherComment:"",grade:""})}submissionFiles=[];if(!save()){note("Не удалось сохранить отправку: возможно, закончилось место в хранилище. Уменьши размер вложений.");return}document.getElementById("veil").classList.remove("on");note("Домашнее задание отправлено учителю");render()}
+  else if(d.reviewSubmission){reviewSubmission(d.reviewSubmission)}
+  else if(d.saveReview){const sub=S.hwSubmissions.find(x=>x.id===d.saveReview);if(sub){sub.teacherComment=(document.getElementById("teacherComment")?.value||"").trim();const newGrade=document.getElementById("submissionGrade")?.value||"";sub.grade=newGrade;sub.reviewed=true;const h=S.hw.find(x=>x.id===sub.hwId);if(sub.gradeEntryId){const ge=S.gradeEntries.find(x=>x.id===sub.gradeEntryId);if(ge&&newGrade)ge.grade=newGrade;else if(ge&&!newGrade)S.gradeEntries=S.gradeEntries.filter(x=>x.id!==sub.gradeEntryId)}else if(newGrade&&h){const ge={id:"hw-grade-"+sub.id,student:sub.student,subj:h.subj,date:h.date,grade:newGrade,criterion:"Домашняя работа",weight:1,comment:"Оценка за сданное ДЗ",createdAt:new Date().toISOString()};S.gradeEntries.push(ge);sub.gradeEntryId=ge.id}save();document.getElementById("veil").classList.remove("on");note(newGrade?"Проверка сохранена, оценка добавлена в журнал":"Проверка сохранена");render()}}
+  else if(d.newQuestion!==undefined){
+    const box=document.getElementById("questionEditors");if(box){const i=box.querySelectorAll(".question-editor").length;box.insertAdjacentHTML("beforeend",questionEditor(i));box.lastElementChild?.querySelector(".qe-text")?.focus()}
+  }
+  else if(d.removeQuestion!==undefined){
+    const card=t.closest(".question-editor");if(card){const box=document.getElementById("questionEditors");if(box.querySelectorAll(".question-editor").length<=1){note("В тесте должен остаться хотя бы один вопрос");return}card.remove();[...box.querySelectorAll(".question-editor")].forEach((q,i)=>{q.dataset.questionIndex=i;q.querySelector(".question-number").textContent="Вопрос "+(i+1)})}
+  }
+  else if(d.deleteTest){if(confirm("Удалить тест из библиотеки? Он также исчезнет из прикреплённых заданий.")){S.tests=S.tests.filter(x=>x.id!==d.deleteTest);S.hw.forEach(h=>h.tests=(h.tests||[]).filter(id=>id!==d.deleteTest));save();render()}}
+  else if(d.addGrade!==undefined&&pick){
+    const grade=document.getElementById("gradeValue").value,criterion=document.getElementById("gradeCriterion").value==="Другое"?(document.getElementById("gradeCustomCriterion")?.value||"").trim():document.getElementById("gradeCriterion").value,weight=+document.getElementById("gradeWeight").value,comment=(document.getElementById("gradeComment").value||"").trim();
+    if(document.getElementById("gradeCriterion").value==="Другое"&&!criterion){note("Укажите, за что выставлена отметка");document.getElementById("gradeCustomCriterion")?.focus();return}
+    if(editGradeId){const old=S.gradeEntries.find(x=>x.id===editGradeId);if(old)Object.assign(old,{grade,criterion,weight,comment});editGradeId=null;save();openPick(pick.si,pick.date,true);renderJournalAfterModal();note("Отметка изменена")}
+    else{S.gradeEntries.push({id:"grade-"+Math.random().toString(36).slice(2),student:pick.si,subj,date:pick.date,grade,criterion,weight,comment,createdAt:new Date().toISOString()});save();openPick(pick.si,pick.date);renderJournalAfterModal()}
+  }
+  else if(d.editGrade){editGradeId=d.editGrade;const g=S.gradeEntries.find(x=>x.id===editGradeId);if(g){subj=g.subj;openPick(g.student,g.date)}}
+  else if(d.cancelGradeEdit!==undefined){editGradeId=null;if(pick)openPick(pick.si,pick.date,true)}
+  else if(d.removeGrade){S.gradeEntries=S.gradeEntries.filter(x=>x.id!==d.removeGrade);if(editGradeId===d.removeGrade)editGradeId=null;save();if(pick){const si=pick.si,date=pick.date;openPick(si,date, date<todayIso)}renderJournalAfterModal()}
+  else if(d.gradeDetail){showGradeDetails(d.gradeDetail)}
+  else if(d.dotSubmission){const sub=S.hwSubmissions.find(x=>x.id===d.dotSubmission),h=sub&&S.hw.find(x=>x.id===sub.hwId);if(sub&&h)openJournalPoint(sub.student,h.subj,h.date,"Домашняя работа")}
+  else if(d.dotResult){const r=S.testResults.find(x=>x.id===d.dotResult),h=r&&S.hw.find(x=>x.id===r.hwId);if(r&&h)openJournalPoint(r.student,h.subj,h.date,"ЦДЗ")}
+  else if(d.reviewResult){reviewResult(d.reviewResult)}
+  else if(d.gradeResult){const r=S.testResults.find(x=>x.id===d.gradeResult);if(r){const h=S.hw.find(x=>x.id===r.hwId);const date=h?h.date:todayIso;const si=r.student;const sj=h?h.subj:subj;const grade=gradeFromCdzResult(r,h);S.gradeEntries.push({id:"grade-"+Math.random().toString(36).slice(2),student:si,subj:sj,date,grade,criterion:"ЦДЗ",weight:1,comment:`Тест: ${r.score}/${r.total}`,cdzTestId:r.testId,hwId:r.hwId||null,cdzResultId:r.id,createdAt:new Date().toISOString()});S.testResults=S.testResults.filter(x=>x.id!==r.id);save();note(`Оценка ${grade} добавлена в журнал; результат ЦДЗ удалён`);render()}}
+  else if(d.gradeview){gradeView=d.gradeview;render()}
+  else if(d.w!==undefined){week=d.w==="0"?monday(new Date()):addDays(week,7*+d.w);render()}
+  else if(d.si!==undefined)openPick(+d.si,d.d);
+  else if(d.g!==undefined&&pick){
+    const k=pick.si+"|"+subj+"|"+pick.date;
+    if(d.g)S.grades[k]=d.g;else delete S.grades[k];delete S.dots[k];
+    save();closePick();render();
+  }
+  else if(d.dot!==undefined&&pick){
+    const g=document.getElementById("dotG").value,on=document.getElementById("dotD").value,criterion=document.getElementById("dotCriterion").value==="Другое"?(document.getElementById("dotCustomCriterion")?.value||"").trim():document.getElementById("dotCriterion").value,weight=+document.getElementById("dotWeight").value,comment=(document.getElementById("dotComment").value||"").trim();
+    if(document.getElementById("dotCriterion").value==="Другое"&&!criterion){note("Укажите, за что запланирована отметка");document.getElementById("dotCustomCriterion")?.focus();return}
+    if(!on||on<pick.date){note("Выберите дату выставления не раньше даты ячейки");return}
+    const k=pick.si+"|"+subj+"|"+pick.date;
+    S.grades[k]="•";S.dots[k]={grade:g,on,criterion,weight,comment};save();openPick(pick.si,pick.date);renderJournalAfterModal();
+  }
+  else if(d.removeDot!==undefined&&pick){const k=pick.si+"|"+subj+"|"+pick.date;delete S.dots[k];if(S.grades[k]==="•")delete S.grades[k];save();openPick(pick.si,pick.date);renderJournalAfterModal()}
+
+  else if(d.close!==undefined)closePick();
+  else if(d.hwd){hwSubj=subj;hwDate=d.hwd;tab="hw";render();document.getElementById("hwText").focus()}
+  else if(d.createTest!==undefined){
+    const title=(document.getElementById("testTitle")?.value||"").trim(),sj=+(document.getElementById("testSubj")?.value||0),cards=[...(document.querySelectorAll("#questionEditors .question-editor"))],questions=[];
+    if(!title){note("Введите название теста");return}
+    for(let i=0;i<cards.length;i++){
+      const card=cards[i],q=(card.querySelector(".qe-text")?.value||"").trim(),options=[...card.querySelectorAll(".qe-option")].map(x=>x.value.trim()),corrects=[...card.querySelectorAll(".qe-correct:checked")].map(x=>+x.value);
+      if(!q){note(`Вопрос ${i+1}: введите текст вопроса`);card.querySelector(".qe-text")?.focus();return}
+      if(options.length!==4||options.some(x=>!x)){note(`Вопрос ${i+1}: заполните все 4 варианта ответа`);return}
+      if(!corrects.length){note(`Вопрос ${i+1}: отметьте хотя бы один правильный ответ`);return}
+      questions.push({q,options,correct:corrects[0],corrects});
+    }
+    if(!questions.length){note("Добавьте хотя бы один вопрос");return}
+    const timeLimit=Math.max(0,Math.min(180,Math.floor(+(document.getElementById("testTimeLimit")?.value||0))));S.tests.push({id:"test-"+Math.random().toString(36).slice(2),title,subj:sj,questions,shuffleQuestions:!!document.getElementById("testShuffleQuestions")?.checked,shuffleOptions:!!document.getElementById("testShuffleOptions")?.checked,timeLimit});save();note("Тест добавлен в библиотеку");render();
+  }
+  else if(d.editHw){
+    const h=S.hw.find(x=>x.id===d.editHw);if(!h)return;
+    editHwId=h.id;hwSubj=h.subj;hwDate=h.date;hwText=h.text||"";hwAll=!h.to;hwTo=h.to?h.to.slice():[];hwTests=(h.tests||[]).slice();hwCdzCriteria=h.cdzCriteria||"0-1=2, 2-3=3, 4-5=4, 6=5";hwCdzCriteriaByTest={...(h.cdzCriteriaByTest||{})};for(const id of hwTests)if(!hwCdzCriteriaByTest[id])hwCdzCriteriaByTest[id]=hwCdzCriteria;pendFiles=[];tab="hw";render();document.getElementById("hwText")?.focus();
+  }
+  else if(d.cancelHwEdit!==undefined){editHwId=null;hwDate=iso(addDays(new Date(),1));hwText="";pendFiles=[];hwTo=[];hwTests=[];hwCdzCriteria="0-1=2, 2-3=3, 4-5=4, 6=5";hwCdzCriteriaByTest={};hwAll=true;render()}
+  else if(d.add!==undefined){
+    const text=hwText.trim(),date=document.getElementById("hwDate").value;
+    if(!date){document.getElementById("hwDate").focus();return}
+    if(date<todayIso&&!editHwId){note("Нельзя задать домашнее задание на прошедшую дату");return}
+    const oldHw=editHwId?S.hw.find(h=>h.id===editHwId):null;
+    if(!text&&!(oldHw?.files?.length)&&!pendFiles.length&&!hwTests.length){document.getElementById("hwText").focus();note("Введите задание, прикрепите файл или выберите тест");return}
+    if(!hwAll&&!hwTo.length){note("Выберите хотя бы одного ученика");return}
+    hwCdzCriteriaByTest={...hwCdzCriteriaByTest,...readCdzCriteriaMapForm()};
+    const cdzCriteriaByTest={};
+    for(const id of hwTests){const criteria=readCdzCriteriaForTest(id);if(!criteria){note("Для каждого ЦДЗ заполните поля «От» и «До» целыми неотрицательными числами; «До» не может быть меньше «От».");return}cdzCriteriaByTest[id]=criteria;}
+    if(hwTests.length&&Object.keys(cdzCriteriaByTest).length!==hwTests.length){note("Проверьте диапазоны баллов для каждого выбранного ЦДЗ.");return}
+    const updated={...(oldHw||{}),id:oldHw?oldHw.id:Math.random().toString(36).slice(2),subj:hwSubj,date,text,to:hwAll?null:hwTo.slice().sort((x,y)=>x-y),files:[...(oldHw?.files||[]),...pendFiles],tests:hwTests.slice(),cdzCriteriaByTest,cdzCriteria:hwCdzCriteria};
+    if(oldHw){const ix=S.hw.findIndex(h=>h.id===oldHw.id);S.hw[ix]=updated}else S.hw.push(updated);
+    if(!save()){if(oldHw){const ix=S.hw.findIndex(h=>h.id===oldHw.id);S.hw[ix]=oldHw}else S.hw.pop();note("Не удалось сохранить: файлы занимают слишком много места. Уберите часть файлов.");return}
+    editHwId=null;hwDate=date;hwText="";pendFiles=[];hwTo=[];hwTests=[];hwCdzCriteria="0-1=2, 2-3=3, 4-5=4, 6=5";hwCdzCriteriaByTest={};hwAll=true;note(oldHw?"Изменения домашнего задания сохранены":"Задание добавлено");render();
+  }
+  else if(d.rmSubmissionFile!==undefined){submissionFiles.splice(+d.rmSubmissionFile,1);const box=document.getElementById("submissionPending");if(box)box.innerHTML=submissionFiles.map((x,j)=>`<span class="fchip">${esc(x.name)}<button type="button" class="x" data-rm-submission-file="${j}" aria-label="Убрать файл">×</button></span>`).join("")}
+  else if(d.rmf!==undefined){pendFiles.splice(+d.rmf,1);document.getElementById("pend").innerHTML=pendHtml()}
+  else if(d.dl){const p=d.dl.split(",");dl(p[0],+p[1])}
+  else if(d.del){S.hw=S.hw.filter(h=>h.id!==d.del);S.hwSubmissions=S.hwSubmissions.filter(x=>x.hwId!==d.del);save();render()}
+});
+document.addEventListener("change",e=>{
+  const i=e.target.id,v=e.target.value;
+  if(i==="role"){S.role=v==="student"?"student":"teacher";tab=isStudent()?"sched":"journal";save();render()}
+  else if(i==="me"){S.me=+v;save();render()}
+  else if(i==="gradeCriterion"){const w=document.getElementById("gradeCustomWrap");if(w)w.style.display=v==="Другое"?"block":"none"}
+  else if(i==="dotCriterion"){const w=document.getElementById("dotCustomWrap");if(w)w.style.display=v==="Другое"?"block":"none"}
+  else if(i==="subj"){subj=+v;render()}
+  else if(e.target.dataset.ab){const k=e.target.dataset.ab;if(k.split("|")[1]<todayIso){note("Нельзя менять отсутствия за прошедшие дни");render();return}if(v)S.abs[k]=v;else delete S.abs[k];save();e.target.className="rs"+(v?(v==="Без уважительной причины"?" bad":" has"):"")}
+  else if(i==="hwSubj")hwSubj=+v;
+  else if(i==="hwAll"){hwAll=e.target.checked;document.querySelectorAll("[data-who]").forEach(c=>c.disabled=hwAll)}
+  else if(e.target.dataset.who!==undefined){const n=+e.target.dataset.who;hwTo=e.target.checked?[...hwTo,n]:hwTo.filter(x=>x!==n)}
+  else if(e.target.dataset.hwTest!==undefined){hwCdzCriteriaByTest={...hwCdzCriteriaByTest,...readCdzCriteriaMapForm()};const id=e.target.dataset.hwTest;hwTests=e.target.checked?[...new Set([...hwTests,id])]:hwTests.filter(x=>x!==id);if(e.target.checked&&!hwCdzCriteriaByTest[id])hwCdzCriteriaByTest[id]=hwCdzCriteria;render()}
+  else if(i==="submissionFileInput"){
+    const fl=[...e.target.files];e.target.value="";
+    fl.forEach(f=>{if(f.size>1048576){note("Файл «"+f.name+"» больше 1 МБ");return}const r=new FileReader();r.onload=()=>{submissionFiles.push({name:f.name,type:f.type,data:r.result});const box=document.getElementById("submissionPending");if(box)box.innerHTML=submissionFiles.map((x,j)=>`<span class="fchip">${esc(x.name)}<button type="button" class="x" data-rm-submission-file="${j}" aria-label="Убрать файл">×</button></span>`).join("")};r.readAsDataURL(f)});
+  }
+  else if(i==="hwFiles"){
+    const fl=[...e.target.files];e.target.value="";
+    fl.forEach(f=>{
+      if(f.size>1048576){note("Файл «"+f.name+"» больше 1 МБ");return}
+      const r=new FileReader();
+      r.onload=()=>{pendFiles.push({name:f.name,type:f.type,data:r.result});document.getElementById("pend").innerHTML=pendHtml()};
+      r.readAsDataURL(f);
+    });
+  }
+  else if(i==="hwDate"){if(v&&v<todayIso){note("Нельзя выбрать прошедшую дату");e.target.value=hwDate=todayIso}else hwDate=v}
+  else if(i==="hwFilter"){hwFilter=v;render()}
+  else if(i==="student"){student=+v;render()}
+});
+document.addEventListener("input",e=>{if(e.target.id==="hwText")hwText=e.target.value});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closePick()});
+render();
+restoreFileHandle();
+</script>
+</body>
+</html>
